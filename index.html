@@ -1,0 +1,2795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MrCrazy Admin Panel · Oct Theme</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+
+:root {
+    --bg: #e7ecf3; --card: #ffffff; --text: #3b4252; --muted: #7d8aa0;
+    --primary: #12877f; --primary-dark: #0b5f59; --accent: #f0973f;
+    --danger: #ef4562; --info: #3567d6; --pink: #d6337e; --success: #1f9d67;
+    --shadow: 0 8px 24px rgba(60,80,110,0.12); --border: rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 40px; }
+h2,h3,h4,.section-title,.top-header span { font-family: 'Poppins', sans-serif; letter-spacing: -0.02em; }
+.top-header {
+    background: #fff; padding: 14px 18px; text-align: center; font-size: 18px; font-weight: 700;
+    position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); display: flex;
+    align-items: center; justify-content: center; gap: 10px; border-bottom: 1px solid var(--border);
+    color: var(--primary-dark);
+}
+.menu-btn { position: absolute; left: 16px; font-size: 22px; cursor: pointer; color: var(--primary-dark); padding: 5px; }
+.top-header span i { color: var(--primary); }
+.sidebar-overlay { position: fixed; inset: 0; background: rgba(15,20,30,0.45); z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; }
+.sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+.sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 280px; max-width: 82%;
+    background: #fff; z-index: 1001; transform: translateX(-100%); transition: 0.3s ease;
+    border-right: 1px solid var(--border); padding-top: 24px; overflow-y: auto; box-shadow: var(--shadow);
+}
+.sidebar.active { transform: translateX(0); }
+.sidebar-logo { text-align: center; font-size: 20px; font-weight: 800; color: var(--primary-dark); margin-bottom: 28px; font-family: Poppins,sans-serif; }
+.sidebar-logo i { color: var(--primary); margin-right: 6px; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; padding: 0 12px 24px; }
+.sidebar-item {
+    padding: 12px 14px; border-radius: 12px; color: var(--muted); font-size: 14px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.15s;
+}
+.sidebar-item i { width: 22px; text-align: center; font-size: 16px; }
+.sidebar-item:hover, .sidebar-item.active { background: rgba(18,135,127,0.1); color: var(--primary-dark); }
+.sidebar-item.active { border-left: 3px solid var(--primary); }
+.main-content { padding: 16px 14px; max-width: 900px; margin: 0 auto; }
+.section { display: none; }
+.section.active { display: block; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: none;} }
+.section-title { font-size: 16px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; color: var(--primary-dark); }
+.section-title::before { content: ''; width: 4px; height: 16px; border-radius: 4px; background: var(--primary); }
+.card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+.project-group-box { background: #f4f7fb; border: 1px solid var(--border); border-left: 4px solid var(--info); border-radius: 14px; padding: 14px; margin-bottom: 16px; }
+.project-group-title { font-size: 15px; color: var(--primary-dark); margin: 0 0 12px 0; font-weight: 700; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 8px;}
+.form-group { margin-bottom: 12px; }
+label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 600; }
+input, select, textarea {
+    width: 100%; padding: 12px 13px; background: #f0f4f8; border: 1px solid var(--border);
+    color: var(--text); border-radius: 12px; font-size: 14px; font-family: Inter,sans-serif;
+}
+textarea { resize: vertical; min-height: 70px; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(18,135,127,0.15); }
+.input-group { display: flex; gap: 8px; align-items: stretch; width: 100%; }
+.input-group input { flex: 1 1 auto; min-width: 0; width: auto !important; }
+.input-group .btn { width: auto !important; flex: 0 0 auto; margin-top: 0 !important; padding: 0 16px; white-space: nowrap; }
+.btn {
+    border: none; color: #fff; padding: 12px 14px; border-radius: 12px; width: 100%; font-size: 13.5px;
+    font-weight: 700; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center;
+    justify-content: center; gap: 8px; background: linear-gradient(135deg,var(--primary),var(--primary-dark));
+    box-shadow: 0 4px 14px rgba(18,135,127,0.25);
+}
+.btn:active { transform: scale(0.98); }
+.btn-success { background: linear-gradient(135deg,#24b47e,#0f7a52); }
+.btn-danger { background: linear-gradient(135deg,var(--danger),#c73865); }
+.btn-working { background: linear-gradient(135deg,var(--info),#1a5fa8); }
+.btn-close-st { background: linear-gradient(135deg,var(--pink),#a52465); }
+.btn-upload { background: linear-gradient(135deg,var(--info),#1364b3); }
+.btn-outline { background: #fff; border: 1.5px solid var(--border); color: var(--text); box-shadow: none; }
+.btn-pill { width: auto; padding: 8px 12px; margin: 0; border-radius: 16px; font-size: 12px; }
+.data-card { background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--primary); padding: 12px; border-radius: 12px; margin-bottom: 12px; font-size: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative; }
+.status-badge { font-weight: 700; padding: 3px 10px; border-radius: 16px; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #fff; }
+.badge-pending { background: var(--accent); color: #000; }
+.badge-approved { background: var(--success); color: #fff; }
+.detail-box { background: #f4f7fb; padding: 10px; border-radius: 10px; margin: 8px 0; white-space: pre-line; font-size: 13px; line-height: 1.5; color: var(--text); }
+.text-muted { color: var(--muted); }
+.text-center { text-align: center; }
+.hidden { display: none !important; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.detail-item { background: #f4f7fb; padding: 8px 10px; border-radius: 9px; font-size: 13px; }
+.detail-item span { display: block; color: var(--muted); font-size: 10px; margin-bottom: 2px; text-transform: uppercase; font-weight: 600; }
+.acc-header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 12px 14px; border-radius: 12px; cursor: pointer; border: 1px solid var(--border); font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+.acc-header.active { background: rgba(18,135,127,0.06); border-color: rgba(18,135,127,0.3); }
+.acc-header .arrow { transition: transform 0.3s; color: var(--muted); }
+.acc-header.active .arrow { transform: rotate(180deg); color: var(--primary); }
+.acc-content { display: none; padding: 8px 2px 12px; }
+.acc-content.active { display: block; animation: fadeIn 0.25s; }
+.checkbox-group { display: flex; flex-direction: column; gap: 10px; background: #f4f7fb; padding: 12px; border-radius: 12px; }
+.checkbox-group label { display: flex; align-items: center; gap: 8px; color: var(--text); font-weight: 500; margin: 0; cursor: pointer; }
+.checkbox-group input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--primary); }
+.trx-verify-box { background: rgba(240,151,63,0.1); border: 2px dashed var(--accent); border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+.lightbox-overlay { position: fixed; inset: 0; background: rgba(5,6,10,0.92); display: none; align-items: center; justify-content: center; z-index: 3000; padding: 20px; }
+.lightbox-overlay.active { display: flex; }
+.lightbox-overlay img { max-width: 100%; max-height: 100%; border-radius: 14px; }
+.lightbox-close { position: absolute; top: 18px; right: 18px; background: rgba(255,255,255,0.15); color: #fff; border: none; width: 42px; height: 42px; border-radius: 50%; font-size: 18px; cursor: pointer; }
+.chat-layout { display: flex; flex-direction: column; height: calc(100vh - 160px); min-height: 420px; }
+.chat-user-list { max-height: 200px; overflow-y: auto; margin-bottom: 12px; }
+.chat-user-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 14px; background: #fff; border: 1px solid var(--border); margin-bottom: 8px; cursor: pointer; }
+.chat-user-item.active { border-color: var(--primary); background: rgba(18,135,127,0.06); }
+.chat-user-item .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,var(--primary),var(--info)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; flex-shrink: 0; overflow: hidden; color: #fff; }
+.chat-user-item .avatar img { width: 100%; height: 100%; object-fit: cover; }
+.chat-user-item .meta { flex: 1; min-width: 0; }
+.chat-user-item .meta strong { display: block; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--primary-dark); }
+.chat-user-item .meta span { font-size: 11.5px; color: var(--muted); }
+.chat-user-item .badge-new { background: var(--danger); color: #fff; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 700; }
+.chat-window { flex: 1; display: flex; flex-direction: column; background: #fff; border-radius: 16px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); }
+.chat-window-header { padding: 12px 14px; background: rgba(18,135,127,0.08); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.chat-window-header .info { flex: 1; }
+.chat-window-header .info strong { font-size: 14px; color: var(--primary-dark); }
+.chat-window-header .info span { font-size: 11px; color: var(--muted); display: block; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px; min-height: 220px; max-height: 340px; background: #f4f7fb; }
+.adm-msg { max-width: 82%; padding: 9px 12px; border-radius: 14px; font-size: 13.5px; line-height: 1.4; word-break: break-word; }
+.adm-msg-user { background: #fff; align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+.adm-msg-admin { background: linear-gradient(135deg,var(--primary),var(--primary-dark)); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.adm-msg-bot { background: rgba(18,135,127,0.1); border: 1px solid rgba(18,135,127,0.2); align-self: flex-start; color: var(--primary-dark); }
+.adm-msg-time { font-size: 10px; opacity: 0.65; margin-top: 3px; display: block; }
+.adm-msg img { max-width: 160px; border-radius: 8px; display: block; margin-bottom: 4px; }
+.adm-msg audio { max-width: 180px; height: 32px; }
+.chat-input-bar { display: flex; align-items: center; gap: 6px; padding: 10px; border-top: 1px solid var(--border); background: #fff; }
+.chat-input-bar input[type=text] { flex: 1; padding: 11px 14px; border-radius: 22px; border: 1px solid var(--border); background: #f0f4f8; color: var(--text); font-size: 13.5px; }
+.chat-act-btn { width: 38px; height: 38px; border-radius: 50%; border: none; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.chat-act-btn.send { background: var(--primary); }
+.chat-act-btn.img { background: #8b5cf6; }
+.chat-act-btn.voice { background: #6366f1; }
+.chat-act-btn.voice.recording { background: var(--danger); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+.online-toggle { display: flex; align-items: center; gap: 10px; background: rgba(31,157,103,0.1); border: 1px solid rgba(31,157,103,0.3); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; }
+.online-toggle input { width: 18px; height: 18px; accent-color: var(--success); }
+.online-toggle label { color: var(--success) !important; margin: 0; font-weight: 600; cursor: pointer; }
+.empty-chat { text-align: center; padding: 40px 20px; color: var(--muted); }
+.account-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+.account-card .av { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg,var(--primary),var(--info)); display: flex; align-items: center; justify-content: center; font-weight: 700; overflow: hidden; flex-shrink: 0; color: #fff; }
+.account-card .av img { width: 100%; height: 100%; object-fit: cover; }
+.account-card .info { flex: 1; min-width: 0; }
+.account-card .info strong { display: block; font-size: 14px; color: var(--primary-dark); }
+.account-card .info span { font-size: 12px; color: var(--muted); }
+.notif-send-box { background: rgba(53,103,214,0.06); border: 1px solid rgba(53,103,214,0.2); border-radius: 14px; padding: 14px; margin-top: 12px; }
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.dash-stat {
+    background: #fff; border-radius: 16px; padding: 16px; text-align: center;
+    box-shadow: var(--shadow); border: 1px solid var(--border); cursor: pointer; transition: 0.15s;
+}
+.dash-stat:active { transform: scale(0.98); }
+.dash-stat .num { font-size: 28px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--primary-dark); }
+.dash-stat .lbl { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+.dash-stat.projects .num { color: var(--primary); }
+.dash-stat.updates .num { color: var(--info); }
+.dash-stat.complaints .num { color: var(--pink); }
+.dash-stat.pending .num { color: var(--accent); }
+.dash-stat.complete .num { color: var(--success); }
+.dash-stat.close .num { color: var(--danger); }
+.status-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.new-badge {
+    position: absolute; top: 8px; right: 8px; background: linear-gradient(135deg,#ff5f6d,#d6337e);
+    color: #fff; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px;
+    animation: pulse 1.5s infinite;
+}
+.pid-card {
+    background: #fff; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px;
+    border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+}
+.pid-card:active { background: rgba(18,135,127,0.06); }
+.pid-card strong { color: var(--primary-dark); font-size: 14px; }
+.pid-card .counts { font-size: 12px; color: var(--muted); }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); font-weight: 700; font-size: 13px; cursor: pointer; margin-bottom: 12px; }
+.doc-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: #f4f7fb; border-radius: 12px; margin-bottom: 8px; }
+.doc-row i { font-size: 22px; color: var(--danger); }
+.doc-row .info { flex: 1; min-width: 0; }
+.doc-row .info strong { display: block; font-size: 13px; }
+.doc-row .info span { font-size: 11px; color: var(--muted); }
+.pin-lock { position: fixed; inset: 0; z-index: 9999; background: linear-gradient(160deg,#0e1420,#182338); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+.pin-lock.hidden { display: none !important; }
+.pin-box { background: #fff; border-radius: 20px; padding: 28px 24px; width: min(340px,90vw); box-shadow: 0 20px 50px rgba(0,0,0,0.35); text-align: center; }
+.pin-box h3 { margin: 0 0 8px; color: var(--primary-dark); font-family: Poppins,sans-serif; }
+.pin-box input { letter-spacing: 8px; text-align: center; font-size: 22px; font-weight: 800; font-family: 'JetBrains Mono', monospace; margin: 12px 0; }
+.global-search-bar { max-width: 900px; margin: 0 auto; padding: 10px 14px 0; position: relative; }
+.global-search-bar input { width: 100%; padding: 12px 14px 12px 40px; border-radius: 14px; border: 1px solid var(--border); background: #fff; font-size: 14px; }
+.global-search-bar .s-icon { position: absolute; left: 28px; top: 22px; color: var(--muted); }
+.search-results { background: #fff; border-radius: 14px; border: 1px solid var(--border); margin-top: 6px; max-height: 280px; overflow-y: auto; display: none; box-shadow: var(--shadow); }
+.search-results.show { display: block; }
+.search-item { padding: 10px 14px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 13px; }
+.search-item:hover { background: rgba(18,135,127,0.08); }
+.search-item strong { color: var(--primary-dark); }
+.admin-notif-btn { position: absolute; right: 16px; font-size: 20px; cursor: pointer; color: var(--primary-dark); padding: 5px; }
+.admin-notif-btn .badge { position: absolute; top: 0; right: 0; background: var(--danger); color: #fff; font-size: 10px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 8px; display: none; align-items: center; justify-content: center; padding: 0 4px; }
+.admin-notif-panel { position: fixed; top: 56px; right: 12px; width: min(340px,92vw); max-height: 70vh; background: #fff; border-radius: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); z-index: 200; display: none; overflow: hidden; flex-direction: column; }
+.admin-notif-panel.open { display: flex; }
+.admin-notif-panel .hdr { padding: 12px 14px; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--primary-dark); display: flex; justify-content: space-between; align-items: center; }
+.admin-notif-panel .list { overflow-y: auto; flex: 1; padding: 8px; }
+.admin-notif-item { padding: 10px; border-radius: 10px; margin-bottom: 6px; background: #f4f7fb; font-size: 12.5px; cursor: pointer; }
+.admin-notif-item.unread { border-left: 3px solid var(--danger); }
+.bulk-bar { display: none; position: sticky; bottom: 0; background: #fff; border-top: 1px solid var(--border); padding: 10px 14px; gap: 8px; flex-wrap: wrap; z-index: 50; box-shadow: 0 -4px 16px rgba(0,0,0,0.08); max-width: 900px; margin: 0 auto; border-radius: 14px 14px 0 0; align-items: center; }
+.bulk-bar.show { display: flex; }
+body.admin-dark { --bg: #0f1620; --card: #1a2332; --text: #e2e8f0; --muted: #94a3b8; --border: rgba(255,255,255,0.08); --shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.rt-toolbar { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; padding:8px; background:#f1f5f9; border-radius:8px 8px 0 0; border:1px solid var(--border); border-bottom:none; }
+.rt-btn { border:1px solid var(--border); background:#fff; border-radius:6px; padding:5px 10px; font-size:12px; font-weight:700; cursor:pointer; color:var(--text); }
+.rt-btn:hover { background:var(--primary-light); color:var(--primary); }
+.rt-editor {
+    min-height: 90px; padding: 12px; border: 1.5px solid var(--border); border-radius: 0 0 8px 8px;
+    background: #fff; font-size: 14px; line-height: 1.5; outline: none;
+}
+.rt-editor:empty:before { content: attr(data-placeholder); color: #94a3b8; pointer-events: none; }
+.rt-editor:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(18,135,127,0.12); }
+body.admin-dark .rt-toolbar { background: #0f172a; }
+body.admin-dark .rt-editor { background: #1a2332; color: var(--text); }
+body.admin-dark .top-header, body.admin-dark .sidebar, body.admin-dark .card, body.admin-dark .data-card, body.admin-dark .pid-card, body.admin-dark .dash-stat, body.admin-dark .chat-window, body.admin-dark .chat-user-item, body.admin-dark .account-card, body.admin-dark .admin-notif-panel, body.admin-dark .search-results, body.admin-dark .bulk-bar, body.admin-dark .pin-box { background: #1a2332; color: var(--text); }
+body.admin-dark input, body.admin-dark select, body.admin-dark textarea { background: #0f1620; color: var(--text); border-color: rgba(255,255,255,0.1); }
+body.admin-dark .detail-box, body.admin-dark .detail-item, body.admin-dark .chat-messages { background: #0f1620; }
+body.admin-dark .sidebar-item:hover, body.admin-dark .sidebar-item.active { background: rgba(18,135,127,0.2); }
+body.admin-dark .btn-outline { background: #1a2332; color: var(--text); }
+body.admin-dark .filter-chip { background: #1a2332; }
+.template-chip { display: inline-block; padding: 6px 10px; border-radius: 12px; background: rgba(18,135,127,0.1); color: var(--primary-dark); font-size: 11px; font-weight: 600; cursor: pointer; margin: 3px; border: 1px solid rgba(18,135,127,0.25); }
+.template-chip:hover { background: rgba(18,135,127,0.2); }
+.filter-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.filter-chip { padding: 6px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer; background: #fff; border: 1px solid var(--border); color: var(--muted); }
+.filter-chip.active { background: linear-gradient(135deg,var(--primary),var(--primary-dark)); color: #fff; border-color: transparent; }
+.simple-bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 80px; margin: 12px 0; }
+.simple-bar-chart .bar-wrap { flex: 1; text-align: center; }
+.simple-bar-chart .bar { background: linear-gradient(180deg,var(--primary),var(--primary-dark)); border-radius: 6px 6px 0 0; min-height: 4px; margin: 0 auto 4px; width: 70%; transition: height 0.3s; }
+.simple-bar-chart .bar-lbl { font-size: 10px; color: var(--muted); font-weight: 600; }
+.activity-log-item { font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: flex-start; }
+.activity-log-item .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); margin-top: 5px; flex-shrink: 0; }
+
+    </style>
+</head>
+<body>
+
+    <!-- ADMIN LOGIN -->
+    <div class="pin-lock" id="pin-lock">
+        <div class="pin-box" style="position:relative;overflow:hidden;">
+            <div style="position:absolute;top:10px;right:14px;font-size:22px;opacity:.85;">🍁</div>
+            <div style="position:absolute;bottom:12px;left:14px;font-size:18px;opacity:.5;">🍂</div>
+            <i class="fas fa-shield-alt fa-2x" style="color:var(--primary);margin-bottom:8px;"></i>
+            <h3>Admin Login</h3>
+            <p class="text-muted" style="font-size:13px;margin:0 0 8px;">Password enter karein</p>
+            <div id="admin-login-step">
+                <input type="password" id="pin-input" placeholder="Password" autocomplete="off" onkeydown="if(event.key==='Enter')unlockAdmin()">
+                <button class="btn" onclick="unlockAdmin()" style="margin-top:8px;"><i class="fas fa-unlock"></i> 🍁 Unlock</button>
+                <button type="button" class="btn btn-outline" onclick="showAdminForgot()" style="margin-top:8px;">Forget Password?</button>
+            </div>
+            <div id="admin-forgot-step" class="hidden">
+                <p class="text-muted" style="font-size:12px;margin:0 0 8px;">Recovery code enter karein</p>
+                <input type="text" id="admin-recover-code" placeholder="Recovery code" autocomplete="off" onkeydown="if(event.key==='Enter')verifyAdminRecover()">
+                <button class="btn" onclick="verifyAdminRecover()" style="margin-top:8px;"><i class="fas fa-key"></i> 🍁 Verify</button>
+                <div id="admin-recover-result" class="hidden" style="margin-top:12px;text-align:left;background:#f4f7fb;border-radius:12px;padding:12px;border:1px solid var(--border);">
+                    <div style="font-size:12px;color:var(--muted);margin-bottom:4px;">Your password</div>
+                    <div id="admin-recover-pass" style="font-family:JetBrains Mono,monospace;font-weight:800;font-size:15px;color:var(--primary-dark);word-break:break-all;"></div>
+                    <button class="btn btn-success" type="button" onclick="unlockAdmin()" style="margin-top:10px;"><i class="fas fa-sign-in-alt"></i> 🍁 Continue Login</button>
+                </div>
+                <button type="button" class="btn btn-outline" onclick="hideAdminForgot()" style="margin-top:8px;">Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
+        <span><i class="fas fa-chess-king"></i> MrCrazy Admin</span>
+        <div class="admin-notif-btn" onclick="toggleAdminNotifPanel()" title="Admin Notifications">
+            <i class="fas fa-bell"></i>
+            <span class="badge" id="admin-notif-badge">0</span>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay & Sidebar -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <i class="fas fa-chess-king"></i> MrCrazy
+        </div>
+        <div class="sidebar-nav">
+            <div class="sidebar-item active" onclick="switchTab('dashboard', this)"><i class="fas fa-tachometer-alt"></i> Dashboard</div>
+            <div class="sidebar-item" onclick="switchTab('live-chats', this)"><i class="fas fa-comments"></i> Live Chats</div>
+            <div class="sidebar-item" onclick="switchTab('chat-accounts', this)"><i class="fas fa-users"></i> Contact Accounts</div>
+            <div class="sidebar-item" onclick="switchTab('pending-projects', this)"><i class="fas fa-home"></i> Projects Home</div>
+            <div class="sidebar-item" onclick="switchTab('manage-users', this)"><i class="fas fa-user-cog"></i> Manage Data</div>
+            <div class="sidebar-item" onclick="switchTab('manage-bills', this)"><i class="fas fa-file-invoice-dollar"></i> Manage Bills</div>
+            <div class="sidebar-item" onclick="switchTab('view-updates', this)"><i class="fas fa-cloud-upload-alt"></i> App Updates</div>
+            <div class="sidebar-item" onclick="switchTab('view-complaints', this)"><i class="fas fa-headset"></i> Complaints</div>
+            <div class="sidebar-item" onclick="switchTab('view-ratings', this)"><i class="fas fa-star"></i> Ratings & Feedback</div>
+            <div class="sidebar-item" onclick="switchTab('view-announcements', this)"><i class="fas fa-bullhorn"></i> Announcements</div>
+            <div class="sidebar-item" onclick="switchTab('view-appstore', this)"><i class="fas fa-store"></i> Apps Store</div>
+            <div class="sidebar-item" onclick="switchTab('view-documents', this)"><i class="fas fa-folder-open"></i> Documents</div>
+            <div class="sidebar-item" onclick="switchTab('view-notifications', this)"><i class="fas fa-bell"></i> Notifications</div>
+            <div class="sidebar-item" onclick="switchTab('view-wa-subs', this)"><i class="fab fa-whatsapp"></i> WA Subscribers</div>
+            <div class="sidebar-item" onclick="switchTab('view-tools', this)"><i class="fas fa-wrench"></i> Tools & Settings</div>
+            <div class="sidebar-item" onclick="adminResetTour()"><i class="fas fa-redo"></i> Reset User Tour</div>
+            <div class="sidebar-item" onclick="lockAdmin()"><i class="fas fa-lock"></i> Lock Panel</div>
+        </div>
+    </div>
+
+    <!-- Global Search -->
+    <div class="global-search-bar">
+        <i class="fas fa-search s-icon"></i>
+        <input type="text" id="global-search" placeholder="Search Project ID, user, phone..." oninput="runGlobalSearch(this.value)" onfocus="runGlobalSearch(this.value)">
+        <div class="search-results" id="search-results"></div>
+    </div>
+
+    <!-- Admin notification panel -->
+    <div class="admin-notif-panel" id="admin-notif-panel">
+        <div class="hdr">
+            <span><i class="fas fa-bell"></i> Admin Alerts</span>
+            <button class="btn btn-outline btn-pill" onclick="clearAdminNotifs()" style="padding:4px 10px;">Clear</button>
+        </div>
+        <div class="list" id="admin-notif-list"><p class="text-muted text-center" style="padding:16px;">No alerts</p></div>
+    </div>
+
+    <div class="main-content">
+
+        <!-- ========== DASHBOARD ========== -->
+        <div id="dashboard" class="section active">
+            <div class="section-title">Dashboard Overview</div>
+            <div class="dash-grid">
+                <div class="dash-stat projects" onclick="switchTab('pending-projects')"><div class="num" id="d-total-projects">0</div><div class="lbl">Total Projects</div></div>
+                <div class="dash-stat updates" onclick="openUpdatesHub()"><div class="num" id="d-total-updates">0</div><div class="lbl">Update Requests</div></div>
+                <div class="dash-stat complaints" onclick="openComplaintsHub()"><div class="num" id="d-total-complaints">0</div><div class="lbl">Complaints</div></div>
+                <div class="dash-stat pending"><div class="num" id="d-total-pending">0</div><div class="lbl">Pending</div></div>
+            </div>
+            <div class="status-row">
+                <div class="dash-stat pending" style="cursor:default"><div class="num" id="d-st-pending">0</div><div class="lbl">Pending</div></div>
+                <div class="dash-stat close" style="cursor:default"><div class="num" id="d-st-close">0</div><div class="lbl">Close</div></div>
+                <div class="dash-stat complete" style="cursor:default"><div class="num" id="d-st-complete">0</div><div class="lbl">Complete</div></div>
+            </div>
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;">Quick Actions</div>
+                <button class="btn" type="button" onclick="openUpdatesHub()"><i class="fas fa-cloud-upload-alt"></i> Updates by Project</button>
+                <button class="btn btn-upload" type="button" onclick="openComplaintsHub()"><i class="fas fa-headset"></i> Complaints by Project</button>
+                <button class="btn btn-outline" type="button" onclick="switchTab('live-chats')"><i class="fas fa-comments"></i> Live Chats</button>
+                <button class="btn btn-outline" type="button" onclick="switchTab('view-announcements')"><i class="fas fa-bullhorn"></i> Announcements</button>
+                <button class="btn btn-outline" type="button" onclick="switchTab('view-documents')"><i class="fas fa-folder-open"></i> Documents</button>
+                <button class="btn btn-outline" type="button" onclick="switchTab('pending-projects')"><i class="fas fa-home"></i> Projects Home</button>
+                <button class="btn btn-outline" type="button" onclick="switchTab('view-ratings')"><i class="fas fa-star"></i> Ratings & Feedback</button>
+            </div>
+            <div class="card">
+                <div class="section-title" style="margin-bottom:8px;">Status Snapshot</div>
+                <div class="simple-bar-chart" id="dash-bar-chart">
+                    <div class="bar-wrap"><div class="bar" id="bar-pending" style="height:20%"></div><div class="bar-lbl">Pending</div></div>
+                    <div class="bar-wrap"><div class="bar" id="bar-close" style="height:20%;background:linear-gradient(180deg,#d6337e,#a52465)"></div><div class="bar-lbl">Close</div></div>
+                    <div class="bar-wrap"><div class="bar" id="bar-complete" style="height:20%;background:linear-gradient(180deg,#1f9d67,#0f7a52)"></div><div class="bar-lbl">Complete</div></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="section-title" style="margin-bottom:8px;">Pending Only</div>
+                <div id="dashboard-pending-list"><p class="text-muted text-center">Loading...</p></div>
+            </div>
+        </div>
+
+        <!-- ========== LIVE CHATS ========== -->
+        <div id="live-chats" class="section">
+            <div class="section-title">Live Support Chats</div>
+
+            <div class="online-toggle">
+                <input type="checkbox" id="admin-online-toggle" onchange="setAdminOnline(this.checked)">
+                <label for="admin-online-toggle" style="margin:0; color:var(--success); font-weight:600; cursor:pointer;">
+                    <i class="fas fa-circle" style="font-size:9px;"></i> Main Online hoon (Users ko dikhega)
+                </label>
+            </div>
+
+            <div class="card" style="border:1px solid rgba(29,140,248,0.3);">
+                <div class="section-title" style="margin-bottom:10px;font-size:15px;">📢 Broadcast Notification (Sab Users)</div>
+                <p class="text-muted" style="font-size:12px;margin:0 0 10px;">Login ho ya na ho — jiske paas app / PWA install hai, sab ko notification jayegi (title + description).</p>
+                <div class="form-group"><label>Title</label><input type="text" id="bc-title" placeholder="e.g. Important Update"></div>
+                <div class="form-group"><label>Description / Message</label><textarea id="bc-body" rows="3" placeholder="Notification ka message..."></textarea></div>
+                <div class="form-group">
+                    <label>OneSignal REST API Key (optional — true push when app closed)</label>
+                    <input type="password" id="bc-rest-key" placeholder="OneSignal → Settings → Keys → REST API Key">
+                    <p class="text-muted" style="font-size:11px;margin:4px 0 0;">Key browser mein local save hoti hai. Dashboard se bhi All segment bhej sakte ho.</p>
+                </div>
+                <button class="btn btn-upload" onclick="sendBroadcastNotification()"><i class="fas fa-bullhorn"></i> Send to ALL Users</button>
+            </div>
+
+            <div class="chat-layout">
+                <div class="card" style="padding:12px; margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <strong style="font-size:13px; color:var(--text-muted);">Chat Users</strong>
+                        <button class="btn btn-outline btn-pill" onclick="loadChatUsers()"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="chat-user-list" id="chat-user-list">
+                        <p class="text-muted text-center" style="font-size:12px; padding:10px;">Loading users...</p>
+                    </div>
+                </div>
+
+                <div class="chat-window" id="chat-window">
+                    <div class="chat-window-header" id="chat-header">
+                        <div class="info">
+                            <strong id="chat-with-name">Select a user</strong>
+                            <span id="chat-with-phone">—</span>
+                        </div>
+                        <button class="btn btn-danger btn-pill" id="btn-delete-chat" style="display:none;" onclick="deleteCurrentChat()"><i class="fas fa-trash"></i> Chat</button>
+                    </div>
+                    <div class="chat-messages" id="admin-chat-messages">
+                        <div class="empty-chat"><i class="fas fa-comments fa-2x" style="opacity:0.3; margin-bottom:10px;"></i><br>Koi user select karein</div>
+                    </div>
+                    <div class="chat-input-bar" id="admin-chat-input" style="display:none;">
+                        <button class="chat-act-btn img" onclick="document.getElementById('admin-chat-img').click()"><i class="fas fa-image"></i></button>
+                        <input type="file" id="admin-chat-img" accept="image/*" style="display:none" onchange="adminSendImage(this)">
+                        <button class="chat-act-btn voice" id="admin-voice-btn" onmousedown="adminStartVoice()" onmouseup="adminStopVoice()" ontouchstart="adminStartVoice()" ontouchend="adminStopVoice()"><i class="fas fa-microphone"></i></button>
+                        <input type="text" id="admin-chat-text" placeholder="Reply likhein..." onkeypress="if(event.key==='Enter')adminSendText()">
+                        <button class="chat-act-btn send" onclick="adminSendText()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notif-send-box" id="notif-box" style="display:none;">
+                <label style="color:var(--info); font-weight:700; margin-bottom:8px; display:block;"><i class="fas fa-bell"></i> User ko Notification bhejo</label>
+                <input type="text" id="notif-title" placeholder="Title" style="margin-bottom:8px;">
+                <textarea id="notif-body" rows="2" placeholder="Message..."></textarea>
+                <button class="btn btn-upload" onclick="sendUserNotification()"><i class="fas fa-paper-plane"></i> Send Notification</button>
+            </div>
+        </div>
+
+        <!-- ========== CHAT ACCOUNTS ========== -->
+        <div id="chat-accounts" class="section">
+            <div class="section-title">Contact Us Accounts</div>
+            <p class="text-muted" style="font-size:13px; margin-bottom:14px;">Yeh accounts Contact Us / Live Chat se banay gaye hain.</p>
+            <div id="accounts-list">
+                <p class="text-muted text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</p>
+            </div>
+        </div>
+
+        <!-- ========== PENDING PROJECTS ========== -->
+        <div id="pending-projects" class="section">
+            <div class="section-title">Pending Projects Approval</div>
+            <div id="pending-container"><p class="text-muted text-center" style="margin-top:30px;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Loading...</p></div>
+            
+            <div class="section-title" style="margin-top:28px;">Approved Projects (Categorized)</div>
+            <div id="approved-container"><p class="text-muted text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</p></div>
+        </div>
+
+        <!-- ========== MANAGE USERS ========== -->
+        <div id="manage-users" class="section">
+            <div class="section-title">Manage Customer Data</div>
+            <div class="card">
+                <div class="form-group">
+                    <label>Project ID</label>
+                    <div class="input-group">
+                        <input type="text" id="u-pid" placeholder="e.g. PROJ-001">
+                        <button class="btn btn-outline" style="margin-top:0;" onclick="loadUserData()"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="form-group"><label>Account Status</label>
+                    <select id="u-status"><option value="Approved">Approved</option><option value="pending">Pending</option><option value="Blocked">Blocked</option></select>
+                </div>
+                <div class="acc-header active" onclick="toggleAccordion(this)"><div><i class="fas fa-user-circle" style="color:var(--primary);margin-right:6px;"></i> User Details</div><i class="fas fa-chevron-down arrow"></i></div>
+                <div class="acc-content active">
+                    <div class="form-group"><label>User Name</label><input type="text" id="u-name"></div>
+                    <div class="form-group"><label>Call Number</label><input type="number" id="u-phone"></div>
+                    <div style="display:flex;gap:8px;">
+                        <div class="form-group" style="flex:1;"><label>WhatsApp</label><input type="number" id="u-wa"></div>
+                        <div class="form-group" style="flex:1;"><label>Secondary</label><input type="number" id="u-sec"></div>
+                    </div>
+                    <div class="form-group"><label>Profile Image URL</label><input type="text" id="u-image"><button class="btn btn-upload btn-pill" style="width:100%;margin-top:6px;" onclick="triggerUpload('u-image')"><i class="fas fa-upload"></i> Upload</button></div>
+                </div>
+                <div class="acc-header" onclick="toggleAccordion(this)"><div><i class="fas fa-project-diagram" style="color:var(--info);margin-right:6px;"></i> Project Info</div><i class="fas fa-chevron-down arrow"></i></div>
+                <div class="acc-content">
+                    <div class="form-group"><label>App Name</label><input type="text" id="u-appname"></div>
+                    <div class="form-group"><label>Details</label><textarea id="u-details" rows="3"></textarea></div>
+                    <div style="display:flex;gap:8px;">
+                        <div class="form-group" style="flex:1;"><label>Type</label><input type="text" id="u-type"></div>
+                        <div class="form-group" style="flex:1;"><label>Category</label><input type="text" id="u-purpose"></div>
+                    </div>
+                    <div class="form-group"><label>Deadline</label><input type="text" id="u-deadline"></div>
+                    <div class="form-group"><label>Link</label><input type="url" id="u-link"></div>
+                    <div class="form-group"><label>Logo URL</label><input type="text" id="u-logo"><button class="btn btn-upload btn-pill" style="width:100%;margin-top:6px;" onclick="triggerUpload('u-logo')"><i class="fas fa-upload"></i> Upload</button></div>
+                </div>
+                <div class="acc-header" onclick="toggleAccordion(this)"><div><i class="fas fa-chart-line" style="color:var(--success);margin-right:6px;"></i> Stats</div><i class="fas fa-chevron-down arrow"></i></div>
+                <div class="acc-content">
+                    <div style="display:flex;gap:8px;">
+                        <div class="form-group" style="flex:1;"><label>Total Users</label><input type="number" id="u-totalusers"></div>
+                        <div class="form-group" style="flex:1;"><label>Version</label><input type="text" id="u-month"></div>
+                    </div>
+                    <div class="form-group"><label>Last Update</label><input type="text" id="u-lastupdate"></div>
+                </div>
+                <div class="acc-header" onclick="toggleAccordion(this)"><div><i class="fas fa-tools" style="color:var(--warning);margin-right:6px;"></i> Maintenance</div><i class="fas fa-chevron-down arrow"></i></div>
+                <div class="acc-content">
+                    <div class="form-group"><label>Enable</label><select id="u-maint-active"><option value="false">Off</option><option value="true">On</option></select></div>
+                    <div class="form-group"><label>Title</label><input type="text" id="u-maint-title"></div>
+                    <div class="form-group"><label>Desc</label><textarea id="u-maint-desc" rows="2"></textarea></div>
+                    <div class="form-group"><label>End Time</label><input type="datetime-local" id="u-maint-end"></div>
+                </div>
+                <div class="acc-header" onclick="toggleAccordion(this)"><div><i class="fas fa-bell" style="color:var(--danger);margin-right:6px;"></i> Notifications</div><i class="fas fa-chevron-down arrow"></i></div>
+                <div class="acc-content">
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="notif-bills"> Force Bill Badge</label>
+                        <label><input type="checkbox" id="notif-update"> Force Update Badge</label>
+                        <label><input type="checkbox" id="notif-complaint"> Force Complaint Badge</label>
+                    </div>
+                </div>
+                <button class="btn" onclick="saveUser()" style="margin-top:16px;"><i class="fas fa-save"></i> Save All</button>
+            </div>
+        </div>
+
+        <!-- ========== BILLS ========== -->
+        <div id="manage-bills" class="section">
+            <div class="section-title">Manage Bills</div>
+            <div class="card">
+                <div class="form-group"><label>Project ID</label>
+                    <div class="input-group"><input type="text" id="b-pid"><button class="btn btn-outline" style="margin-top:0;" onclick="loadBillData()"><i class="fas fa-search"></i></button></div>
+                </div>
+                <div id="trx-verify-container" class="trx-verify-box hidden">
+                    <strong style="color:var(--warning);"><i class="fas fa-clock"></i> Payment Submitted</strong>
+                    <div style="margin:8px 0; font-size:13px;"><strong>TRX:</strong> <span id="verify-trx-id" style="font-family:monospace;color:var(--success);"></span></div>
+                    <div style="font-size:12px; margin-bottom:10px;"><strong>Time:</strong> <span id="verify-trx-time"></span></div>
+                    <button class="btn btn-success" onclick="approveCustomerPayment()"><i class="fas fa-check-circle"></i> Approve Payment</button>
+                </div>
+                <div class="acc-header active" onclick="toggleAccordion(this)"><div><i class="fas fa-file-invoice-dollar" style="color:var(--success);margin-right:6px;"></i> Current Bill</div><i class="fas fa-chevron-down arrow"></i></div>
+                <div class="acc-content active">
+                    <div class="form-group"><label>Amount</label><input type="text" id="b-amount"></div>
+                    <div class="form-group"><label>Date</label><input type="text" id="b-date"></div>
+                    <div class="form-group"><label>Server Used</label><input type="text" id="b-serverused"></div>
+                    <div class="form-group"><label>Description</label><textarea id="b-desc" rows="2"></textarea></div>
+                    <div class="form-group"><label>Status</label><select id="b-status"><option value="Pending">Pending</option><option value="Checking">Checking</option><option value="Paid">Paid</option></select></div>
+                    <div style="display:flex;gap:8px;">
+                        <div class="form-group" style="flex:1;"><label>Next Date</label><input type="text" id="b-nextdate"></div>
+                        <div class="form-group" style="flex:1;"><label>Days Left</label><input type="text" id="b-daysleft"></div>
+                    </div>
+                </div>
+                <div class="acc-header" onclick="toggleAccordion(this)"><div><i class="fas fa-history" style="color:var(--danger);margin-right:6px;"></i> Old Bill</div><i class="fas fa-chevron-down arrow"></i></div>
+                <div class="acc-content">
+                    <div class="form-group"><label>Old Amount</label><input type="text" id="b-old-amount"></div>
+                    <div class="form-group"><label>Old Date</label><input type="text" id="b-old-date"></div>
+                    <div class="form-group"><label>Old Status</label><select id="b-old-status"><option value="Paid">Paid</option><option value="Pending">Pending</option></select></div>
+                </div>
+                <button class="btn btn-success" onclick="saveBill()"><i class="fas fa-check-circle"></i> Save Bills & Notify</button>
+            </div>
+            <div class="section-title">Monthly Summaries</div>
+            <div class="card">
+                <div class="form-group"><label>Month</label><input type="text" id="bs-month"></div>
+                <div class="form-group"><label>System Used</label><input type="text" id="bs-sysused"></div>
+                <div style="display:flex;gap:8px;">
+                    <div class="form-group" style="flex:1;"><label>Amount</label><input type="text" id="bs-amt"></div>
+                    <div class="form-group" style="flex:1;"><label>Date</label><input type="text" id="bs-dt"></div>
+                </div>
+                <div class="form-group"><label>Status</label><select id="bs-stat" onchange="document.getElementById('bs-trx-group').style.display=this.value==='Paid'?'block':'none'"><option value="Pending">Pending</option><option value="Paid">Paid</option></select></div>
+                <div class="form-group" id="bs-trx-group" style="display:none;"><label>TRX ID</label><input type="text" id="bs-trx"></div>
+                <button class="btn btn-upload" onclick="addMonthlySummary()"><i class="fas fa-plus"></i> Add Summary</button>
+                <div id="monthly-summary-list" style="margin-top:12px;"></div>
+                <button class="btn btn-danger" onclick="deleteAllSummaries()" style="margin-top:10px;"><i class="fas fa-trash-alt"></i> Delete All Summaries</button>
+            </div>
+        </div>
+
+        <!-- ========== UPDATES ========== -->
+        <div id="view-updates" class="section">
+            <div class="section-title">Publish App Update</div>
+            <div class="card">
+                <div class="form-group"><label>Project ID</label>
+                    <div class="input-group"><input type="text" id="apk-pid"><button class="btn btn-outline" style="margin-top:0;" onclick="loadPublishedApps()"><i class="fas fa-search"></i></button></div>
+                </div>
+                <div id="link-indicator" style="display:none;background:rgba(29,140,248,0.12);border:1px solid var(--info);padding:10px;border-radius:10px;margin-bottom:12px;font-size:12.5px;">
+                    Linking to <span id="link-type" style="font-weight:700;"></span>
+                    <button onclick="cancelApkLink()" style="float:right;background:none;border:none;color:var(--danger);cursor:pointer;"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="form-group"><label>Title</label><input type="text" id="apk-title"></div>
+                <div class="form-group"><label>APK File Name</label><input type="text" id="apk-filename" placeholder="Update.apk"></div>
+                <div class="form-group"><label>What's New</label><textarea id="apk-whatsnew" rows="3"></textarea></div>
+                <button class="btn" onclick="publishApk()"><i class="fas fa-upload"></i> Publish & Notify</button>
+                <div id="published-apps-list" style="margin-top:14px;"></div>
+            </div>
+            <div class="section-title" style="margin-top:24px;">Customer Update Requests</div>
+            <div id="updates-drill-back" class="back-link hidden" onclick="showUpdatesHub()"><i class="fas fa-arrow-left"></i> Back to Projects</div>
+            <div id="updates-hub-list"></div>
+            <div id="updates-container"></div>
+        </div>
+
+        <!-- ========== COMPLAINTS ========== -->
+        <div id="view-complaints" class="section">
+            <div class="section-title">Customer Complaints</div>
+            <div id="complaints-drill-back" class="back-link hidden" onclick="showComplaintsHub()"><i class="fas fa-arrow-left"></i> Back to Projects</div>
+            <div id="complaints-hub-list"></div>
+            <div id="complaints-container"></div>
+        </div>
+
+        <!-- ========== RATINGS ========== -->
+        <div id="view-ratings" class="section">
+            <div class="section-title">Ratings & Feedback</div>
+            <div class="dash-grid" style="margin-bottom:14px;">
+                <div class="dash-stat" style="cursor:default"><div class="num" id="r-avg">—</div><div class="lbl">Avg Rating</div></div>
+                <div class="dash-stat" style="cursor:default"><div class="num" id="r-count">0</div><div class="lbl">Total Reviews</div></div>
+                <div class="dash-stat" style="cursor:default"><div class="num" id="r-yes">0</div><div class="lbl">Yes Answers</div></div>
+                <div class="dash-stat" style="cursor:default"><div class="num" id="r-no">0</div><div class="lbl">No Answers</div></div>
+            </div>
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;">By Project</div>
+                <div id="ratings-by-project"><p class="text-muted text-center">Loading...</p></div>
+            </div>
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;">Recent Ratings</div>
+                <div id="ratings-recent"><p class="text-muted text-center">Loading...</p></div>
+            </div>
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;">Yes / No Answers</div>
+                <div id="feedback-list"><p class="text-muted text-center">Loading...</p></div>
+            </div>
+        </div>
+
+        <!-- ========== ANNOUNCEMENTS (NEW) ========== -->
+        <div id="view-announcements" class="section">
+            <div class="section-title">Dashboard Announcements</div>
+            <p class="text-muted" style="font-size:13px;margin-bottom:14px;">Yeh banner client app ke dashboard par dikhega (login ke baad). User dismiss kar sakta hai.</p>
+            <div class="card">
+                <div class="form-group"><label>Title (optional)</label><input type="text" id="ann-title" placeholder="e.g. Important Notice"></div>
+                <div class="form-group"><label>Message / Body *</label><textarea id="ann-body" rows="3" placeholder="Announcement text..."></textarea></div>
+                <button class="btn btn-success" onclick="publishAnnouncement()"><i class="fas fa-bullhorn"></i> Publish Announcement</button>
+                <button class="btn btn-danger" onclick="clearAnnouncement()" style="margin-top:8px;"><i class="fas fa-times"></i> Clear Active Announcement</button>
+            </div>
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;">Current Active</div>
+                <div id="ann-current"><p class="text-muted text-center">Loading...</p></div>
+            </div>
+        </div>
+
+        <!-- ========== APPS STORE ========== -->
+        <div id="view-appstore" class="section">
+            <div class="section-title">Apps Store Management</div>
+            <p class="text-muted" style="font-size:13px;margin-bottom:14px;">Client home → Apps Store. Apps, notes, What's New, screenshots, download & WhatsApp channel.</p>
+
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;"><i class="fab fa-whatsapp"></i> WhatsApp Channel Link</div>
+                <div class="form-group"><label>Channel / Group invite URL</label>
+                    <input type="text" id="as-wa-channel" placeholder="https://whatsapp.com/channel/...">
+                </div>
+                <button class="btn btn-success" type="button" onclick="saveAppStoreSettings()"><i class="fas fa-save"></i> Save Channel Link</button>
+            </div>
+
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;"><i class="fas fa-plus"></i> Add / Edit App</div>
+                <input type="hidden" id="as-edit-id">
+                <div class="form-group"><label>App Name *</label><input type="text" id="as-name" placeholder="e.g. MrCrazy Wallet"></div>
+                <div class="form-group"><label>Icon URL</label>
+                    <input type="text" id="as-icon" placeholder="https://...">
+                    <button class="btn btn-upload btn-pill" style="width:100%;margin-top:6px;" type="button" onclick="triggerUpload('as-icon')"><i class="fas fa-upload"></i> Upload Icon</button>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+                    <div class="form-group"><label>Version</label><input type="text" id="as-version" placeholder="1.0.0" value="1.0.0"></div>
+                    <div class="form-group"><label>Size (MB)</label><input type="text" id="as-size" placeholder="25"></div>
+                    <div class="form-group"><label>Order</label><input type="number" id="as-order" value="0"></div>
+                </div>
+                <div class="form-group"><label>Download URL *</label><input type="text" id="as-download" placeholder="https://...apk or store link"></div>
+
+                <div class="form-group">
+                    <label>NOTE</label>
+                    <div class="rt-toolbar" data-for="as-note-editor">
+                        <button type="button" class="rt-btn" onclick="rtCmd('as-note-editor','bold')" title="Bold"><b>B</b></button>
+                        <button type="button" class="rt-btn" onclick="rtCmd('as-note-editor','italic')" title="Italic"><i>I</i></button>
+                        <button type="button" class="rt-btn" onclick="rtCmd('as-note-editor','underline')" title="Underline"><u>U</u></button>
+                        <button type="button" class="rt-btn" onclick="rtCmd('as-note-editor','insertUnorderedList')" title="List">• List</button>
+                        <button type="button" class="rt-btn" onclick="rtColor('as-note-editor','#12877f')" style="color:#12877f;">Teal</button>
+                        <button type="button" class="rt-btn" onclick="rtColor('as-note-editor','#dc2626')" style="color:#dc2626;">Red</button>
+                        <button type="button" class="rt-btn" onclick="rtColor('as-note-editor','#2563eb')" style="color:#2563eb;">Blue</button>
+                        <button type="button" class="rt-btn" onclick="rtColor('as-note-editor','#000000')">Black</button>
+                        <button type="button" class="rt-btn" onclick="rtCmd('as-note-editor','removeFormat')" title="Clear format">Clear</button>
+                    </div>
+                    <div id="as-note-editor" class="rt-editor" contenteditable="true" data-placeholder="Important notes before download..."></div>
+                </div>
+
+                <div class="form-group">
+                    <label>What's New</label>
+                    <div class="rt-toolbar" data-for="as-whatsnew-editor">
+                        <button type="button" class="rt-btn" onclick="rtCmd('as-whatsnew-editor','bold')" title="Bold"><b>B</b></button>
+                        <button type="button" class="rt-btn" onclick="rtCmd('as-whatsnew-editor','italic')" title="Italic"><i>I</i></button>
+                        <button type="button" class="rt-btn" onclick="rtCmd('as-whatsnew-editor','underline')" title="Underline"><u>U</u></button>
+                        <button type="button" class="rt-btn" onclick="rtCmd('as-whatsnew-editor','insertUnorderedList')" title="List">• List</button>
+                        <button type="button" class="rt-btn" onclick="rtColor('as-whatsnew-editor','#12877f')" style="color:#12877f;">Teal</button>
+                        <button type="button" class="rt-btn" onclick="rtColor('as-whatsnew-editor','#dc2626')" style="color:#dc2626;">Red</button>
+                        <button type="button" class="rt-btn" onclick="rtColor('as-whatsnew-editor','#2563eb')" style="color:#2563eb;">Blue</button>
+                        <button type="button" class="rt-btn" onclick="rtColor('as-whatsnew-editor','#000000')">Black</button>
+                        <button type="button" class="rt-btn" onclick="rtCmd('as-whatsnew-editor','removeFormat')">Clear</button>
+                    </div>
+                    <div id="as-whatsnew-editor" class="rt-editor" contenteditable="true" data-placeholder="What's new in this version..."></div>
+                </div>
+
+                <div class="form-group"><label>Screenshots (one URL per line)</label>
+                    <textarea id="as-screenshots" rows="3" placeholder="https://img1.png&#10;https://img2.png"></textarea>
+                    <button class="btn btn-upload btn-pill" style="width:100%;margin-top:6px;" type="button" onclick="uploadAppScreenshot()"><i class="fas fa-upload"></i> Upload Screenshot (appends URL)</button>
+                </div>
+                <button class="btn btn-success" type="button" onclick="saveAppStoreApp()"><i class="fas fa-save"></i> Save App</button>
+                <button class="btn btn-outline" type="button" onclick="resetAppStoreForm()" style="margin-top:8px;">Clear Form</button>
+            </div>
+
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;">Published Apps</div>
+                <div id="as-apps-list"><p class="text-muted text-center">Loading...</p></div>
+            </div>
+        </div>
+
+        <!-- ========== DOCUMENTS (NEW) ========== -->
+        <div id="view-documents" class="section">
+            <div class="section-title">Project Documents</div>
+            <p class="text-muted" style="font-size:13px;margin-bottom:14px;">Client Settings → Documents section mein yeh files dikhengi.</p>
+            <div class="card">
+                <div class="form-group"><label>Project ID</label>
+                    <div class="input-group">
+                        <input type="text" id="doc-pid" placeholder="e.g. PROJ-001">
+                        <button class="btn btn-outline" style="margin-top:0;" onclick="loadProjectDocs()"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="form-group"><label>Document Title *</label><input type="text" id="doc-title" placeholder="e.g. Contract Agreement"></div>
+                <div class="form-group"><label>File URL *</label>
+                    <input type="text" id="doc-url" placeholder="https://... or upload below">
+                    <button class="btn btn-upload btn-pill" style="width:100%;margin-top:6px;" onclick="triggerUpload('doc-url')"><i class="fas fa-upload"></i> Upload File / Image</button>
+                </div>
+                <div class="form-group"><label>Size / Note (optional)</label><input type="text" id="doc-size" placeholder="e.g. 2.4 MB"></div>
+                <button class="btn btn-success" onclick="addProjectDoc()"><i class="fas fa-plus"></i> Add Document</button>
+            </div>
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;">Documents for Project</div>
+                <div id="docs-list"><p class="text-muted text-center">Project ID enter karke Load karein</p></div>
+            </div>
+        </div>
+
+        <!-- ========== TOOLS & SETTINGS ========== -->
+        <!-- WA SUBSCRIBERS -->
+        <div id="view-wa-subs" class="section">
+            <div class="section-title"><i class="fab fa-whatsapp" style="color:#25D366;"></i> WhatsApp Subscribers</div>
+            <div class="card">
+                <p class="text-muted" style="font-size:13px;margin:0 0 12px;">User app se jo Subscribe Notification WhatsApp karte hain — yahan Project ID + number dikhega.</p>
+                <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+                    <input type="text" id="wa-sub-filter" placeholder="Filter Project ID / number..." oninput="filterWaSubsList()" style="flex:1;min-width:160px;">
+                    <button class="btn btn-pill" type="button" style="width:auto;margin:0;" onclick="loadWaSubscribers()"><i class="fas fa-sync-alt"></i> 🍁 Refresh</button>
+                </div>
+                <div id="wa-subs-count" class="text-muted" style="font-size:12px;font-weight:700;margin-bottom:10px;">Loading…</div>
+                <div id="wa-subs-list"></div>
+            </div>
+        </div>
+
+        <div id="view-tools" class="section">
+            <div class="section-title">Tools & Settings</div>
+
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;"><i class="fas fa-key"></i> Admin PIN</div>
+                <div class="form-group"><label>New PIN (4–8 digits)</label><input type="password" id="new-pin" maxlength="8" placeholder="e.g. 5678"></div>
+                <button class="btn" onclick="saveAdminPin()"><i class="fas fa-save"></i> Save PIN</button>
+            </div>
+
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;"><i class="fas fa-moon"></i> Appearance</div>
+                <button class="btn btn-outline" onclick="toggleAdminDark()"><i class="fas fa-adjust"></i> Toggle Dark Mode</button>
+            </div>
+
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;"><i class="fas fa-tools"></i> Global Maintenance Mode</div>
+                <p class="text-muted" style="font-size:12px;">ON karne par saari client apps par maintenance dikhega (per-project se alag).</p>
+                <div class="form-group"><label>Enable</label>
+                    <select id="gmaint-active"><option value="false">Off</option><option value="true">On</option></select>
+                </div>
+                <div class="form-group"><label>Title</label><input type="text" id="gmaint-title" placeholder="Under Maintenance"></div>
+                <div class="form-group"><label>Message</label><textarea id="gmaint-msg" rows="2" placeholder="We will be back soon..."></textarea></div>
+                <button class="btn btn-working" onclick="saveGlobalMaintenance()"><i class="fas fa-save"></i> Save Global Maintenance</button>
+            </div>
+
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;"><i class="fas fa-paper-plane"></i> Targeted Push (1 Project)</div>
+                <div class="form-group"><label>Project ID</label><input type="text" id="target-pid" placeholder="PROJ-001"></div>
+                <div class="form-group"><label>Title</label><input type="text" id="target-title" placeholder="Notification title"></div>
+                <div class="form-group"><label>Message</label><textarea id="target-body" rows="2"></textarea></div>
+                <button class="btn btn-upload" onclick="sendTargetedPush()"><i class="fas fa-bullseye"></i> Send to Project</button>
+            </div>
+
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;"><i class="fas fa-reply"></i> Quick Reply Templates</div>
+                <p class="text-muted" style="font-size:12px;">Updates/Complaints reply boxes mein yeh chips dikhengi.</p>
+                <div class="form-group"><label>Templates (one per line)</label>
+                    <textarea id="reply-templates" rows="5" placeholder="Working on it...&#10;Completed. Please check.&#10;Need more details."></textarea>
+                </div>
+                <button class="btn" onclick="saveReplyTemplates()"><i class="fas fa-save"></i> Save Templates</button>
+            </div>
+
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;"><i class="fas fa-file-export"></i> Export Data</div>
+                <button class="btn btn-outline" onclick="exportCSV('projects')"><i class="fas fa-download"></i> Export Projects CSV</button>
+                <button class="btn btn-outline" onclick="exportCSV('updates')"><i class="fas fa-download"></i> Export Updates CSV</button>
+                <button class="btn btn-outline" onclick="exportCSV('complaints')"><i class="fas fa-download"></i> Export Complaints CSV</button>
+                <button class="btn btn-outline" onclick="exportCSV('ratings')"><i class="fas fa-download"></i> Export Ratings CSV</button>
+            </div>
+
+            <div class="card">
+                <div class="section-title" style="margin-bottom:10px;"><i class="fas fa-history"></i> Admin Activity Log</div>
+                <div id="admin-activity-log"><p class="text-muted text-center">No activity yet</p></div>
+                <button class="btn btn-outline btn-pill" style="margin-top:8px;" onclick="clearAdminActivity()">Clear Log</button>
+            </div>
+        </div>
+
+        <!-- ========== NOTIFICATIONS ========== -->
+        <div id="view-notifications" class="section">
+            <div class="section-title">All Sent Notifications</div>
+            <p class="text-muted" style="font-size:13px;margin-bottom:12px;">Broadcast + admin notifications history. Delete old ones yahan se.</p>
+            <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+                <button class="btn btn-outline btn-pill" onclick="loadAdminNotifHistory()"><i class="fas fa-sync"></i> Refresh</button>
+                <button class="btn btn-danger btn-pill" onclick="deleteAllBroadcasts()"><i class="fas fa-trash-alt"></i> Delete All Broadcasts</button>
+            </div>
+            <div id="admin-notif-history">
+                <p class="text-muted text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk action bar -->
+    <div class="bulk-bar" id="bulk-bar">
+        <span id="bulk-count" style="font-weight:700;font-size:13px;">0 selected</span>
+        <button class="btn btn-working btn-pill" onclick="bulkSetStatus('Working')">Working</button>
+        <button class="btn btn-success btn-pill" onclick="bulkSetStatus('Complete')">Complete</button>
+        <button class="btn btn-close-st btn-pill" onclick="bulkSetStatus('Close')">Close</button>
+        <button class="btn btn-outline btn-pill" onclick="clearBulkSelection()">Cancel</button>
+    </div>
+
+    <input type="file" id="adminFileInput" accept="image/*,application/pdf" style="display:none">
+    <div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox(event)">
+        <button class="lightbox-close" onclick="closeLightbox(event)"><i class="fas fa-times"></i></button>
+        <img id="lightbox-img" src="" alt="Preview">
+    </div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, get, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDUg33dZk0hsqTMK2l2r32QCHeOZB93w4w",
+    databaseURL: "https://website-create-ec499-default-rtdb.firebaseio.com",
+    projectId: "website-create-ec499",
+    storageBucket: "website-create-ec499.firebasestorage.app"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.currentChatPhone = null;
+window.adminMsgUnsub = null;
+let isRecording = false, mediaRecorder = null, audioChunks = [];
+
+window.toggleSidebar = function() {
+    document.getElementById('sidebar').classList.toggle('active');
+    document.getElementById('sidebar-overlay').classList.toggle('active');
+};
+
+window.switchTab = function(tabId, el) {
+    try {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.sidebar-item').forEach(n => n.classList.remove('active'));
+        var sec = document.getElementById(tabId);
+        if (sec) sec.classList.add('active');
+        if (el) el.classList.add('active');
+        else {
+            document.querySelectorAll('.sidebar-item').forEach(function(n) {
+                var oc = n.getAttribute('onclick') || '';
+                if (oc.indexOf("'" + tabId + "'") >= 0) n.classList.add('active');
+            });
+        }
+        var sb = document.getElementById('sidebar');
+        var ov = document.getElementById('sidebar-overlay');
+        if (sb) sb.classList.remove('active');
+        if (ov) ov.classList.remove('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (tabId === 'live-chats' && typeof loadChatUsers === 'function') loadChatUsers();
+        if (tabId === 'chat-accounts' && typeof loadChatAccounts === 'function') loadChatAccounts();
+        if (tabId === 'view-notifications' && typeof loadAdminNotifHistory === 'function') loadAdminNotifHistory();
+        if (tabId === 'dashboard' && typeof refreshDashboardStats === 'function') refreshDashboardStats();
+        if (tabId === 'view-updates' && typeof showUpdatesHub === 'function') showUpdatesHub();
+        if (tabId === 'view-complaints' && typeof showComplaintsHub === 'function') showComplaintsHub();
+        if (tabId === 'view-ratings' && typeof loadRatingsPanel === 'function') loadRatingsPanel();
+        if (tabId === 'view-announcements' && typeof loadCurrentAnnouncement === 'function') loadCurrentAnnouncement();
+        if (tabId === 'view-documents') { /* wait for PID */ }
+    } catch (e) { console.error(e); }
+};
+
+window.toggleAccordion = function(el) {
+    el.classList.toggle('active');
+    const c = el.nextElementSibling;
+    if(c && c.classList.contains('acc-content')) c.classList.toggle('active');
+};
+window.openLightbox = function(url) {
+    document.getElementById('lightbox-img').src = url;
+    document.getElementById('lightbox-overlay').classList.add('active');
+};
+window.closeLightbox = function(e) {
+    if(e) e.stopPropagation();
+    document.getElementById('lightbox-overlay').classList.remove('active');
+};
+
+// ===== ADMIN ONLINE =====
+window.setAdminOnline = function(online) {
+    set(ref(db, 'adminStatus'), { online: online, lastSeen: Date.now(), typing: false });
+};
+setInterval(() => {
+    const cb = document.getElementById('admin-online-toggle');
+    if(cb && cb.checked) { update(ref(db, 'adminStatus'), { lastSeen: Date.now(), online: true }); }
+}, 30000);
+
+// ===== LIVE CHAT =====
+window.loadChatUsers = function() {
+    onValue(ref(db, 'chatUsers'), (snap) => {
+        const list = document.getElementById('chat-user-list');
+        if(!snap.exists()) { list.innerHTML = '<p class="text-muted text-center" style="font-size:12px;padding:12px;">Koi chat user nahi.</p>'; return; }
+        const users = snap.val();
+        get(ref(db, 'chats')).then(chatsSnap => {
+            const chats = chatsSnap.exists() ? chatsSnap.val() : {};
+            let html = '';
+            const sorted = Object.entries(users).sort((a,b) => (b[1].lastSeen||0) - (a[1].lastSeen||0));
+            sorted.forEach(([phone, u]) => {
+                const chat = chats[phone];
+                const meta = chat && chat.meta ? chat.meta : {};
+                const msgs = chat && chat.messages ? Object.values(chat.messages) : [];
+                const lastMsg = msgs.length ? msgs.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0))[0] : null;
+                const lastText = lastMsg ? (lastMsg.text || (lastMsg.image?'📷 Image':lastMsg.audio?'🎤 Voice':'')) : 'No messages';
+                const initial = (u.username||u.fullName||'?')[0].toUpperCase();
+                const av = u.dp ? `<img src="${u.dp}">` : initial;
+                html += `
+                <div class="chat-user-item ${window.currentChatPhone===phone?'active':''}" onclick="openAdminChat('${phone}')">
+                    <div class="avatar">${av}</div>
+                    <div class="meta">
+                        <strong>${u.username||u.fullName||phone}</strong>
+                        <span>${lastText.substring(0,35)}${lastText.length>35?'...':''}</span>
+                    </div>
+                    ${meta.status==='open' ? '<span class="badge-new">OPEN</span>' : ''}
+                </div>`;
+            });
+            list.innerHTML = html || '<p class="text-muted text-center">No users</p>';
+        });
+    }, { onlyOnce: false });
+};
+
+window.openAdminChat = function(phone) {
+    window.currentChatPhone = phone;
+    document.querySelectorAll('.chat-user-item').forEach(el => el.classList.remove('active'));
+    get(ref(db, 'chatUsers/' + phone)).then(snap => {
+        const u = snap.val() || {};
+        document.getElementById('chat-with-name').innerText = u.username || u.fullName || phone;
+        document.getElementById('chat-with-phone').innerText = phone;
+        document.getElementById('btn-delete-chat').style.display = 'inline-flex';
+        document.getElementById('admin-chat-input').style.display = 'flex';
+        document.getElementById('notif-box').style.display = 'block';
+    });
+
+    if(window.adminMsgUnsub) try{ window.adminMsgUnsub(); }catch(e){}
+    const box = document.getElementById('admin-chat-messages');
+    window.adminMsgUnsub = onValue(ref(db, `chats/${phone}/messages`), (snap) => {
+        const data = snap.val() || {};
+        const keys = Object.keys(data).sort((a,b) => (data[a].timestamp||0)-(data[b].timestamp||0));
+        box.innerHTML = '';
+        if(!keys.length) { box.innerHTML = '<div class="empty-chat">No messages yet</div>'; return; }
+        keys.forEach(k => {
+            const m = data[k];
+            const div = document.createElement('div');
+            let cls = 'adm-msg ';
+            if(m.from==='user') cls += 'adm-msg-user';
+            else if(m.from==='bot') cls += 'adm-msg-bot';
+            else cls += 'adm-msg-admin';
+            div.className = cls;
+            let html = '';
+            if(m.replyTo) html += `<div style="font-size:11px;opacity:0.7;border-left:2px solid rgba(255,255,255,0.3);padding-left:6px;margin-bottom:4px;">${m.replyTo}</div>`;
+            if(m.image) html += `<img src="${m.image}" onclick="openLightbox('${m.image}')">`;
+            if(m.audio) html += `<audio controls src="${m.audio}"></audio>`;
+            if(m.text) html += m.text;
+            const t = m.timestamp ? new Date(m.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+            html += `<span class="adm-msg-time">${t}</span>`;
+            html += `<button onclick="deleteMsg('${phone}','${k}')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.3);border:none;color:#fff;width:20px;height:20px;border-radius:50%;font-size:10px;cursor:pointer;opacity:0.5;">×</button>`;
+            div.innerHTML = html;
+            div.style.position = 'relative';
+            box.appendChild(div);
+        });
+        box.scrollTop = box.scrollHeight;
+    });
+};
+window.deleteMsg = (phone, key) => { if(confirm('Delete this message?')) remove(ref(db, `chats/${phone}/messages/${key}`)); };
+window.deleteCurrentChat = function() {
+    if(!window.currentChatPhone) return;
+    if(confirm('Poori chat history delete karein?')) {
+        remove(ref(db, `chats/${window.currentChatPhone}`)).then(() => {
+            document.getElementById('admin-chat-messages').innerHTML = '<div class="empty-chat">Chat deleted</div>';
+            alert('Chat deleted');
+        });
+    }
+};
+
+window.adminSendText = async function() {
+    const input = document.getElementById('admin-chat-text');
+    const text = (input.value || '').trim();
+    if(!text) return alert('Message likhein');
+    if(!window.currentChatPhone) return alert('Pehle left se user select karein');
+    input.value = '';
+    try {
+        set(ref(db, `chats/${window.currentChatPhone}/typing`), true);
+        setTimeout(() => set(ref(db, `chats/${window.currentChatPhone}/typing`), false), 1200);
+        await push(ref(db, `chats/${window.currentChatPhone}/messages`), { text: text, from: 'admin', timestamp: Date.now() });
+        await update(ref(db, `chats/${window.currentChatPhone}/meta`), { lastMsgAt: Date.now(), status: 'open', user: document.getElementById('chat-with-name').innerText || '', phone: window.currentChatPhone });
+        await push(ref(db, 'userNotifications/' + window.currentChatPhone), { title: 'New Reply from Admin', body: text.substring(0, 80), type: 'chat', ts: Date.now(), read: false });
+    } catch(err) { alert('Message send fail: ' + err.message); }
+};
+
+window.adminSendImage = function(input) {
+    const file = input.files[0]; if(!file) return;
+    if(!window.currentChatPhone) return alert('Pehle user select karein');
+    const reader = new FileReader();
+    reader.onload = async e => {
+        try {
+            await push(ref(db, `chats/${window.currentChatPhone}/messages`), { image: e.target.result, from: 'admin', timestamp: Date.now() });
+            await update(ref(db, `chats/${window.currentChatPhone}/meta`), { lastMsgAt: Date.now(), status: 'open' });
+            await push(ref(db, 'userNotifications/' + window.currentChatPhone), { title: 'New Image from Admin', body: 'Admin ne image bheji', type: 'chat', ts: Date.now(), read: false });
+        } catch(err) { alert('Image send fail: ' + err.message); }
+    };
+    reader.readAsDataURL(file); input.value = '';
+};
+
+window.adminStartVoice = function() {
+    if(isRecording) return;
+    if(!window.currentChatPhone) return alert('Pehle user select karein');
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        mediaRecorder = new MediaRecorder(stream); audioChunks = [];
+        mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+        mediaRecorder.onstop = async () => {
+            const blob = new Blob(audioChunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.onload = async () => {
+                try {
+                    await push(ref(db, `chats/${window.currentChatPhone}/messages`), { audio: reader.result, from: 'admin', timestamp: Date.now() });
+                    await update(ref(db, `chats/${window.currentChatPhone}/meta`), { lastMsgAt: Date.now(), status: 'open' });
+                    await push(ref(db, 'userNotifications/' + window.currentChatPhone), { title: 'New Voice from Admin', body: 'Admin ne voice message bheja', type: 'chat', ts: Date.now(), read: false });
+                } catch(err) { alert('Voice send fail: ' + err.message); }
+            };
+            reader.readAsDataURL(blob);
+            stream.getTracks().forEach(t => t.stop());
+        };
+        mediaRecorder.start(); isRecording = true;
+        document.getElementById('admin-voice-btn').classList.add('recording');
+    }).catch(() => alert('Mic access denied'));
+};
+window.adminStopVoice = function() {
+    if(!isRecording || !mediaRecorder) return;
+    mediaRecorder.stop(); isRecording = false;
+    document.getElementById('admin-voice-btn').classList.remove('recording');
+};
+
+window.sendBroadcastNotification = async function() {
+    const title = (document.getElementById('bc-title').value || '').trim() || 'MrCrazy Notification';
+    const body = (document.getElementById('bc-body').value || '').trim();
+    if (!body) return alert('Description / message likhein');
+    const restKeyInput = (document.getElementById('bc-rest-key').value || '').trim();
+    if (restKeyInput) localStorage.setItem('onesignal_rest_key', restKeyInput);
+    const key = restKeyInput || localStorage.getItem('onesignal_rest_key') || '';
+    try {
+        await push(ref(db, 'broadcastNotifications'), { title, body, message: body, ts: Date.now(), from: 'admin' });
+        let onesignalOk = false;
+        if (key) {
+            try {
+                const res = await fetch('https://onesignal.com/api/v1/notifications', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Authorization': 'Basic ' + key },
+                    body: JSON.stringify({
+                        app_id: 'a291449e-5e47-42c5-b575-ed24970d5c91', included_segments: ['All'],
+                        headings: { en: title }, contents: { en: body }, priority: 10, android_accent_color: 'FF12877F'
+                    })
+                });
+                const data = await res.json();
+                if (data.id || data.recipients !== undefined) onesignalOk = true;
+            } catch (e) {}
+        }
+        alert(onesignalOk ? 'Broadcast + OneSignal push bhej diya!' : 'Firebase broadcast save ho gaya.');
+        document.getElementById('bc-title').value = ''; document.getElementById('bc-body').value = '';
+    } catch (e) { alert('Failed: ' + e.message); }
+};
+setTimeout(() => { const k = localStorage.getItem('onesignal_rest_key'); const el = document.getElementById('bc-rest-key'); if (k && el) el.value = k; }, 400);
+
+window.sendUserNotification = async function() {
+    if(!window.currentChatPhone) return alert('Pehle user select karein');
+    const title = document.getElementById('notif-title').value.trim() || 'Notification from Admin';
+    const body = document.getElementById('notif-body').value.trim();
+    if(!body) return alert('Message likhein');
+    await push(ref(db, 'userNotifications/' + window.currentChatPhone), { title, body, type: 'admin', ts: Date.now(), read: false });
+    await push(ref(db, 'adminNotifications'), { title, body, target: window.currentChatPhone, ts: Date.now() });
+    await push(ref(db, 'broadcastNotifications'), { title, body, message: body, ts: Date.now(), from: 'admin', target: window.currentChatPhone });
+    alert('Notification bhej di gayi!');
+    document.getElementById('notif-title').value = ''; document.getElementById('notif-body').value = '';
+};
+
+window.loadChatAccounts = function() {
+    onValue(ref(db, 'chatUsers'), (snap) => {
+        const list = document.getElementById('accounts-list');
+        if(!snap.exists()) { list.innerHTML = '<p class="text-muted text-center">Koi account nahi.</p>'; return; }
+        const users = snap.val();
+        let html = '';
+        Object.entries(users).forEach(([phone, u]) => {
+            const av = u.dp ? `<img src="${u.dp}">` : (u.username||'?')[0].toUpperCase();
+            html += `<div class="account-card"><div class="av">${av}</div><div class="info"><strong>${u.fullName||u.username||'—'}</strong><span>@${u.username||''} · ${phone}</span><span style="font-size:11px;">Joined: ${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}</span></div><button class="btn btn-danger btn-pill" onclick="deleteChatAccount('${phone}')"><i class="fas fa-trash"></i></button></div>`;
+        });
+        list.innerHTML = html;
+    });
+};
+window.deleteChatAccount = function(phone) {
+    if(!confirm(`Account + uski saari chats delete karein?\n${phone}`)) return;
+    remove(ref(db, 'chatUsers/' + phone)); remove(ref(db, 'chats/' + phone)); remove(ref(db, 'userNotifications/' + phone));
+    alert('Account deleted');
+};
+
+function buildProjectDetailsHtml(u) {
+    let linkHtml = u.refLink ? `<a href="${u.refLink}" target="_blank" style="color:var(--info);">${u.refLink}</a>` : 'N/A';
+    const pdfUrl = u.designPdf || u.pdfUrl || '';
+    let pdfHtml = pdfUrl ? `<a href="${pdfUrl}" target="_blank" style="color:var(--success);">PDF</a>` : 'N/A';
+    const logoUrl = u.appLogo || '';
+    let logoHtml = logoUrl ? `<img src="${logoUrl}" style="width:40px;height:40px;border-radius:8px;cursor:pointer;" onclick="openLightbox('${logoUrl}')">` : 'N/A';
+    return `<div class="detail-grid"><div class="detail-item"><span>User</span>${u.userName||'-'}</div><div class="detail-item"><span>App</span>${u.appName||'-'}</div><div class="detail-item"><span>Type</span>${u.projType||'-'}</div><div class="detail-item"><span>WhatsApp</span>${u.waNum||'-'}</div></div><div class="detail-box">${u.details||'No details'}</div><div style="font-size:12.5px;margin-top:8px;">Deadline: ${u.deadline?new Date(u.deadline).toLocaleString():'N/A'} · Link: ${linkHtml}<br>PDF: ${pdfHtml} · Logo: ${logoHtml}</div>`;
+}
+
+onValue(ref(db, 'users'), (snapshot) => {
+    let pendingHtml = '';
+    let categorizedHtml = '';
+    
+    if(snapshot.exists()) {
+        const users = snapshot.val();
+        let hasPending = false;
+        let categoryGroups = {};
+
+        for(let pid in users) {
+            const u = users[pid];
+            const st = (u.status||'').toLowerCase();
+            
+            if(st === 'pending') {
+                hasPending = true;
+                pendingHtml += `<div class="data-card" style="border-left-color:var(--warning);">
+                    <div style="display:flex;justify-content:space-between;"><strong style="color:var(--primary);">${pid}</strong><span class="status-badge badge-pending">Pending</span></div>
+                    ${buildProjectDetailsHtml(u)}
+                    <div style="display:flex;gap:8px;margin-top:12px;">
+                        <button class="btn btn-success" style="flex:1;margin:0;" onclick="approveProject('${pid}')"><i class="fas fa-check"></i> Approve</button>
+                        <button class="btn btn-danger" style="flex:1;margin:0;" onclick="deleteUser('${pid}')"><i class="fas fa-trash"></i></button>
+                    </div></div>`;
+            }
+            
+            if(st === 'approved') {
+                let cat = u.projType || 'Uncategorized';
+                if(!categoryGroups[cat]) categoryGroups[cat] = [];
+                categoryGroups[cat].push({ pid, ...u });
+            }
+        }
+        
+        if(!hasPending) pendingHtml = '<p class="text-muted text-center" style="margin-top:20px;">All caught up!</p>';
+        
+        if(Object.keys(categoryGroups).length > 0) {
+            for(let cat in categoryGroups) {
+                categorizedHtml += `<div class="project-category-title"><i class="fas fa-folder"></i> ${cat} Projects (${categoryGroups[cat].length})</div>`;
+                categoryGroups[cat].forEach(u => {
+                    const pid = u.pid;
+                    categorizedHtml += `<div class="data-card" style="border-left-color:var(--success);padding:12px;">
+                        <div style="display:flex;justify-content:space-between;cursor:pointer;" onclick="document.getElementById('ad-${pid}').classList.toggle('hidden')">
+                            <div><strong style="color:var(--primary);">${pid}</strong><br><span class="text-muted" style="font-size:12px;">${u.appName||u.userName||''}</span></div>
+                            <span class="status-badge badge-approved">Approved</span>
+                        </div>
+                        <div id="ad-${pid}" class="hidden" style="margin-top:10px;">${buildProjectDetailsHtml(u)}
+                            <button class="btn btn-danger btn-outline" style="margin-top:10px;" onclick="deleteUser('${pid}')"><i class="fas fa-trash"></i> Delete</button>
+                        </div></div>`;
+                });
+            }
+        } else {
+            categorizedHtml = '<p class="text-muted text-center">No approved projects yet.</p>';
+        }
+
+    } else {
+        pendingHtml = categorizedHtml = '<p class="text-muted text-center">No users found.</p>';
+    }
+    
+    document.getElementById('pending-container').innerHTML = pendingHtml;
+    document.getElementById('approved-container').innerHTML = categorizedHtml;
+});
+window.approveProject = function(pid) { if(confirm('Approve '+pid+'?')) update(ref(db,'users/'+pid),{status:'Approved'}); };
+window.deleteUser = function(pid) { if(confirm('Delete '+pid+'?')) remove(ref(db,'users/'+pid)); };
+
+window.loadUserData = function() {
+    const pid = document.getElementById('u-pid').value.trim();
+    if(!pid) return alert('Enter Project ID');
+    get(ref(db,'users/'+pid)).then(snap => {
+        if(!snap.exists()) return alert('Not found');
+        const d = snap.val();
+        document.getElementById('u-status').value = d.status||'Approved'; document.getElementById('u-name').value = d.userName||'';
+        document.getElementById('u-appname').value = d.appName||''; document.getElementById('u-phone').value = d.callNum||d.phone||'';
+        document.getElementById('u-wa').value = d.waNum||''; document.getElementById('u-sec').value = d.secNum||'';
+        document.getElementById('u-details').value = d.details||''; document.getElementById('u-type').value = d.projType||'';
+        document.getElementById('u-purpose').value = d.purpose||''; document.getElementById('u-deadline').value = d.deadline||'';
+        document.getElementById('u-link').value = d.refLink||''; document.getElementById('u-totalusers').value = d.totalUsers||'';
+        document.getElementById('u-month').value = d.updateMonth||''; document.getElementById('u-lastupdate').value = d.lastUpdate||'';
+        document.getElementById('u-image').value = d.userImage||''; document.getElementById('u-logo').value = d.appLogo||'';
+        if(d.maintenance) { document.getElementById('u-maint-active').value = d.maintenance.active?'true':'false'; document.getElementById('u-maint-title').value = d.maintenance.title||''; document.getElementById('u-maint-desc').value = d.maintenance.desc||''; document.getElementById('u-maint-end').value = d.maintenance.endTime||''; }
+        if(d.notifications) { document.getElementById('notif-bills').checked = !!d.notifications.bills; document.getElementById('notif-update').checked = !!d.notifications.update; document.getElementById('notif-complaint').checked = !!d.notifications.complaint; }
+        alert('Loaded');
+    });
+};
+window.saveUser = function() {
+    const pid = document.getElementById('u-pid').value.trim();
+    if(!pid) return alert('Project ID required');
+    const data = {
+        status: document.getElementById('u-status').value, userName: document.getElementById('u-name').value, appName: document.getElementById('u-appname').value, callNum: document.getElementById('u-phone').value, waNum: document.getElementById('u-wa').value, secNum: document.getElementById('u-sec').value, details: document.getElementById('u-details').value, projType: document.getElementById('u-type').value, purpose: document.getElementById('u-purpose').value, deadline: document.getElementById('u-deadline').value, refLink: document.getElementById('u-link').value, totalUsers: document.getElementById('u-totalusers').value, updateMonth: document.getElementById('u-month').value, lastUpdate: document.getElementById('u-lastupdate').value, userImage: document.getElementById('u-image').value, appLogo: document.getElementById('u-logo').value,
+        maintenance: { active: document.getElementById('u-maint-active').value==='true', title: document.getElementById('u-maint-title').value, desc: document.getElementById('u-maint-desc').value, endTime: document.getElementById('u-maint-end').value },
+        notifications: { bills: document.getElementById('notif-bills').checked, update: document.getElementById('notif-update').checked, complaint: document.getElementById('notif-complaint').checked }
+    };
+    update(ref(db,'users/'+pid), data).then(()=>alert('Saved!'));
+};
+
+window.loadBillData = function() {
+    const pid = document.getElementById('b-pid').value.trim();
+    if(!pid) return alert('Enter Project ID');
+    onValue(ref(db,'bills/'+pid), snap => {
+        if(!snap.exists()) { document.getElementById('trx-verify-container').classList.add('hidden'); return; }
+        const d = snap.val();
+        document.getElementById('b-amount').value = d.currentAmount||''; document.getElementById('b-date').value = d.billDate||'';
+        document.getElementById('b-serverused').value = d.serverUsed||''; document.getElementById('b-desc').value = d.billDescription||'';
+        document.getElementById('b-status').value = d.status||'Pending'; document.getElementById('b-nextdate').value = d.nextDate||'';
+        document.getElementById('b-daysleft').value = d.daysLeft||''; document.getElementById('b-old-amount').value = d.oldAmount||'';
+        document.getElementById('b-old-date').value = d.oldDate||''; document.getElementById('b-old-status').value = d.oldStatus||'Paid';
+        const box = document.getElementById('trx-verify-container');
+        if(d.trxId && (d.status==='Checking'||d.status==='Verifying')) { box.classList.remove('hidden'); document.getElementById('verify-trx-id').innerText = d.trxId; document.getElementById('verify-trx-time').innerText = d.payDate?new Date(d.payDate).toLocaleString():'N/A'; } else box.classList.add('hidden');
+    });
+    onValue(ref(db,'bills/'+pid+'/summary'), snap => {
+        let html = '';
+        if(snap.exists()) { const s = snap.val(); for(let k in s) { const m = s[k]; html += `<div class="data-card" style="border-left-color:${m.status==='Paid'?'var(--success)':'var(--warning)'};padding:10px;"><div style="display:flex;justify-content:space-between;"><strong>${m.month}</strong><button class="btn btn-danger btn-pill" style="padding:4px 8px;" onclick="deleteSummary('${pid}','${k}')"><i class="fas fa-trash"></i></button></div><div style="font-size:12px;margin-top:6px;">${m.systemUsed||''} · ${m.amount||''} · ${m.status}</div></div>`; } } else html = '<p class="text-muted text-center" style="font-size:12px;">No summaries</p>';
+        document.getElementById('monthly-summary-list').innerHTML = html;
+    });
+};
+window.approveCustomerPayment = function() {
+    const pid = document.getElementById('b-pid').value.trim();
+    if(!pid) return;
+    if(confirm('Approve payment?')) { update(ref(db,'bills/'+pid),{status:'Paid',ackPopup:false,autoSummaryAdded:false}); update(ref(db,`users/${pid}/notifications`),{bills:true}); alert('Approved'); }
+};
+window.saveBill = function() {
+    const pid = document.getElementById('b-pid').value.trim();
+    if(!pid) return alert('Project ID required');
+    update(ref(db,'bills/'+pid), {
+        currentAmount: document.getElementById('b-amount').value, billDate: document.getElementById('b-date').value, serverUsed: document.getElementById('b-serverused').value, billDescription: document.getElementById('b-desc').value, status: document.getElementById('b-status').value, nextDate: document.getElementById('b-nextdate').value, daysLeft: document.getElementById('b-daysleft').value, oldAmount: document.getElementById('b-old-amount').value, oldDate: document.getElementById('b-old-date').value, oldStatus: document.getElementById('b-old-status').value
+    }).then(()=>{ update(ref(db,`users/${pid}/notifications`),{bills:true}); alert('Saved & Notified'); });
+};
+window.addMonthlySummary = function() {
+    const pid = document.getElementById('b-pid').value.trim();
+    if(!pid) return alert('Load Project ID first');
+    const mon = document.getElementById('bs-month').value;
+    if(!mon) return alert('Month required');
+    push(ref(db,'bills/'+pid+'/summary'), { month: mon, systemUsed: document.getElementById('bs-sysused').value, amount: document.getElementById('bs-amt').value, billDate: document.getElementById('bs-dt').value, status: document.getElementById('bs-stat').value, trxId: document.getElementById('bs-stat').value==='Paid'?document.getElementById('bs-trx').value:'', timestamp: Date.now() }).then(()=>{ update(ref(db,`users/${pid}/notifications`),{bills:true}); alert('Added'); });
+};
+window.deleteSummary = (pid,k) => { if(confirm('Delete?')) remove(ref(db,`bills/${pid}/summary/${k}`)); };
+window.deleteAllSummaries = function() { const pid = document.getElementById('b-pid').value.trim(); if(!pid) return alert('Load Project ID'); if(confirm('Delete ALL summaries?')) remove(ref(db,`bills/${pid}/summary`)); };
+
+window.pendingPublishSource = null;
+window.preparePublishLink = function(pid, id, type) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('view-updates').classList.add('active');
+    document.getElementById('apk-pid').value = pid;
+    window.pendingPublishSource = { id, type };
+    document.getElementById('link-type').innerText = type; document.getElementById('link-indicator').style.display = 'block';
+    loadPublishedApps(); window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+window.cancelApkLink = function() { window.pendingPublishSource=null; document.getElementById('link-indicator').style.display='none'; };
+window.loadPublishedApps = function() {
+    const pid = document.getElementById('apk-pid').value.trim();
+    if(!pid) return;
+    onValue(ref(db,`appUpdates/${pid}`), snap => {
+        let html = '';
+        if(snap.exists()) { const d = snap.val(); for(let k in d) { const u = d[k]; html += `<div class="data-card" style="padding:12px;"><div style="display:flex;justify-content:space-between;"><strong>${u.title}</strong><button class="btn btn-danger btn-pill" onclick="deletePublishedApp('${pid}','${k}')"><i class="fas fa-trash"></i></button></div><div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${u.fileName}</div></div>`; } }
+        else html = '<p class="text-muted text-center" style="font-size:12px;">None</p>';
+        document.getElementById('published-apps-list').innerHTML = html;
+    });
+};
+window.publishApk = function() {
+    const pid = document.getElementById('apk-pid').value.trim();
+    const title = document.getElementById('apk-title').value.trim();
+    const fn = document.getElementById('apk-filename').value.trim();
+    if(!pid||!title||!fn) return alert('Required fields missing');
+    const payload = { title, fileName: fn, whatsNew: document.getElementById('apk-whatsnew').value, timestamp: Date.now() };
+    if(window.pendingPublishSource) payload.sourceType = window.pendingPublishSource.type;
+    set(push(ref(db,`appUpdates/${pid}`)), payload).then(() => {
+        if(window.pendingPublishSource) { const node = window.pendingPublishSource.type==='update'?'updateRequests':'complaints'; update(ref(db,`${node}/${pid}/${window.pendingPublishSource.id}`),{appReadyCreated:true}); }
+        update(ref(db,`users/${pid}/notifications`),{update:true}); alert('Published!'); cancelApkLink();
+        document.getElementById('apk-title').value=''; document.getElementById('apk-filename').value=''; document.getElementById('apk-whatsnew').value='';
+    });
+};
+window.deletePublishedApp = (pid,k) => { if(confirm('Delete?')) remove(ref(db,`appUpdates/${pid}/${k}`)); };
+
+// ==== UPDATES / COMPLAINTS cache ====
+window._dashRefreshTimer = null;
+function scheduleDashRefresh() {
+    if (window._dashRefreshTimer) clearTimeout(window._dashRefreshTimer);
+    window._dashRefreshTimer = setTimeout(function() {
+        const d = document.getElementById('dashboard');
+        if (d && d.classList.contains('active') && typeof refreshDashboardStats === 'function') refreshDashboardStats();
+    }, 400);
+}
+onValue(ref(db,'updateRequests'), snap => {
+    window._cacheUpdates = snap.exists() ? snap.val() : {};
+    const sec = document.getElementById('view-updates');
+    if (sec && sec.classList.contains('active') && typeof renderUpdatesHub === 'function') renderUpdatesHub();
+    scheduleDashRefresh();
+});
+
+window.saveUpdateReply = async function(pid, rid) {
+    const el = document.getElementById('upd-reply-' + pid + '-' + rid);
+    const reply = (el && el.value || '').trim();
+    const fileEl = document.getElementById('upd-img-' + pid + '-' + rid);
+    const file = fileEl && fileEl.files && fileEl.files[0];
+    if (!reply && !file) return alert('Reply ya image likhein/choose karein');
+    try {
+        const payload = { adminReply: reply || '(image)', adminReplyAt: Date.now() };
+        if (file) {
+            payload.adminReplyImage = await new Promise(function(res, rej) {
+                const r = new FileReader();
+                r.onload = function() { res(r.result); };
+                r.onerror = rej;
+                r.readAsDataURL(file);
+            });
+        }
+        await update(ref(db, `updateRequests/${pid}/${rid}`), payload);
+        await update(ref(db, `users/${pid}/notifications`), { update: true });
+        try { if (typeof playAdminSound === 'function') playAdminSound('success'); } catch(e){}
+        alert('Reply saved');
+    } catch (e) {
+        try { if (typeof playAdminSound === 'function') playAdminSound('error'); } catch(e2){}
+        alert('Fail');
+    }
+};
+window.changeUpdateStatus = (pid,rid,st) => { update(ref(db,`updateRequests/${pid}/${rid}`),{status:st}); update(ref(db,`users/${pid}/notifications`),{update:true}); };
+window.deleteUpdate = (pid,rid) => { if(confirm('Delete?')) remove(ref(db,`updateRequests/${pid}/${rid}`)); };
+
+onValue(ref(db,'complaints'), snap => {
+    window._cacheComplaints = snap.exists() ? snap.val() : {};
+    const sec = document.getElementById('view-complaints');
+    if (sec && sec.classList.contains('active') && typeof renderComplaintsHub === 'function') renderComplaintsHub();
+    scheduleDashRefresh();
+});
+
+window.setComplaintStatus = function(pid, cid, st) { update(ref(db, `complaints/${pid}/${cid}`), { status: st }).then(() => { update(ref(db, `users/${pid}/notifications`), { complaint: true }); }); };
+window.saveComplaintReply = async function(pid, cid) {
+    const el = document.getElementById('comp-reply-' + pid + '-' + cid);
+    const reply = (el && el.value || '').trim();
+    const fileEl = document.getElementById('comp-img-' + pid + '-' + cid);
+    const file = fileEl && fileEl.files && fileEl.files[0];
+    if (!reply && !file) return alert('Reply ya image likhein/choose karein');
+    try {
+        const payload = { adminReply: reply || '(image)', adminReplyAt: Date.now() };
+        if (file) {
+            payload.adminReplyImage = await new Promise(function(res, rej) {
+                const r = new FileReader();
+                r.onload = function() { res(r.result); };
+                r.onerror = rej;
+                r.readAsDataURL(file);
+            });
+        }
+        await update(ref(db, `complaints/${pid}/${cid}`), payload);
+        await update(ref(db, `users/${pid}/notifications`), { complaint: true });
+        try { if (typeof playAdminSound === 'function') playAdminSound('success'); } catch(e){}
+        alert('Saved');
+    } catch(e) {
+        try { if (typeof playAdminSound === 'function') playAdminSound('error'); } catch(e2){}
+        alert('Fail');
+    }
+};
+window.resolveComplaint = (pid,cid) => setComplaintStatus(pid, cid, 'Complete');
+window.deleteComplaint = (pid,cid) => { if(confirm('Delete?')) remove(ref(db,`complaints/${pid}/${cid}`)); };
+
+window.loadAdminNotifHistory = function() {
+    const box = document.getElementById('admin-notif-history');
+    if (!box) return; box.innerHTML = '<p class="text-muted text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+    Promise.all([ get(ref(db, 'broadcastNotifications')), get(ref(db, 'adminNotifications')) ]).then(([bcSnap, adSnap]) => {
+        let items = [];
+        if (bcSnap.exists()) { const d = bcSnap.val(); Object.keys(d).forEach(k => { items.push({ id: k, path: 'broadcastNotifications', kind: 'Broadcast (All Users)', ...d[k] }); }); }
+        if (adSnap.exists()) { const d = adSnap.val(); Object.keys(d).forEach(k => { items.push({ id: k, path: 'adminNotifications', kind: 'Admin Log', ...d[k] }); }); }
+        items.sort((a, b) => (b.ts || b.timestamp || 0) - (a.ts || a.timestamp || 0));
+        if (!items.length) { box.innerHTML = '<p class="text-muted text-center">Koi notification history nahi.</p>'; return; }
+        box.innerHTML = items.map(n => {
+            const title = n.title || 'Notification'; const body = n.body || n.message || ''; const when = new Date(n.ts || n.timestamp || Date.now()).toLocaleString(); const target = n.target ? ` · Target: ${n.target}` : '';
+            return `<div class="data-card" style="border-left-color:var(--info);"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;"><div style="flex:1;min-width:0;"><span class="status-badge" style="background:var(--info);color:#fff;margin-bottom:6px;">${n.kind}</span><strong style="display:block;font-size:14px;margin-top:6px;">${title}</strong><div style="font-size:13px;color:var(--text-muted);margin-top:4px;white-space:pre-line;">${body}</div><div style="font-size:11px;color:var(--text-muted);margin-top:8px;">${when}${target}</div></div><button class="btn btn-danger btn-pill" onclick="deleteOneNotif('${n.path}','${n.id}')"><i class="fas fa-trash"></i></button></div></div>`;
+        }).join('');
+    }).catch(e => { box.innerHTML = '<p class="text-muted text-center">Error: ' + (e.message||e) + '</p>'; });
+};
+window.deleteOneNotif = function(path, id) { if (!confirm('Is notification ko delete karein?')) return; remove(ref(db, path + '/' + id)).then(() => loadAdminNotifHistory()); };
+window.deleteAllBroadcasts = function() { if (!confirm('SAARI broadcast notifications delete karein?')) return; remove(ref(db, 'broadcastNotifications')).then(() => { alert('All broadcasts deleted'); loadAdminNotifHistory(); }); };
+
+/* ===== ANNOUNCEMENTS ===== */
+window.publishAnnouncement = async function() {
+    const title = (document.getElementById('ann-title').value || '').trim();
+    const body = (document.getElementById('ann-body').value || '').trim();
+    if (!body) return alert('Message / body likhein');
+    const id = 'ann_' + Date.now();
+    try {
+        await set(ref(db, 'announcements/active'), { id, title, body, message: body, ts: Date.now() });
+        alert('Announcement published! Client dashboard par dikhega.');
+        document.getElementById('ann-title').value = '';
+        document.getElementById('ann-body').value = '';
+        loadCurrentAnnouncement();
+    } catch (e) { alert('Fail: ' + e.message); }
+};
+window.clearAnnouncement = async function() {
+    if (!confirm('Active announcement clear karein?')) return;
+    try {
+        await remove(ref(db, 'announcements/active'));
+        alert('Cleared');
+        loadCurrentAnnouncement();
+    } catch (e) { alert('Fail'); }
+};
+window.loadCurrentAnnouncement = function() {
+    const box = document.getElementById('ann-current');
+    if (!box) return;
+    get(ref(db, 'announcements/active')).then(snap => {
+        if (!snap.exists()) {
+            box.innerHTML = '<p class="text-muted text-center">Koi active announcement nahi</p>';
+            return;
+        }
+        const a = snap.val();
+        box.innerHTML = `<div class="data-card" style="border-left-color:var(--info);">
+            <strong>${a.title || 'Announcement'}</strong>
+            <div class="detail-box">${a.body || a.message || ''}</div>
+            <div class="text-muted" style="font-size:11px;">ID: ${a.id || '—'} · ${a.ts ? new Date(a.ts).toLocaleString() : ''}</div>
+        </div>`;
+    }).catch(() => { box.innerHTML = '<p class="text-muted">Error loading</p>'; });
+};
+
+/* ===== DOCUMENTS ===== */
+window.loadProjectDocs = function() {
+    const pid = (document.getElementById('doc-pid').value || '').trim();
+    const list = document.getElementById('docs-list');
+    if (!pid) return alert('Project ID enter karein');
+    list.innerHTML = '<p class="text-muted text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+    get(ref(db, `documents/${pid}`)).then(snap => {
+        if (!snap.exists()) {
+            list.innerHTML = '<p class="text-muted text-center">Is project ke liye koi document nahi</p>';
+            return;
+        }
+        const items = Object.entries(snap.val()).map(([k, v]) => ({ key: k, ...v })).sort((a,b)=>(b.ts||0)-(a.ts||0));
+        list.innerHTML = items.map(d => `
+            <div class="doc-row">
+                <i class="fas fa-file-pdf"></i>
+                <div class="info">
+                    <strong>${d.title || d.name || 'Document'}</strong>
+                    <span>${d.size || ''} ${d.date ? '· ' + new Date(d.date).toLocaleDateString() : ''}</span>
+                    ${d.url ? `<a href="${d.url}" target="_blank" style="font-size:11px;color:var(--info);">Open link</a>` : ''}
+                </div>
+                <button class="btn btn-danger btn-pill" onclick="deleteProjectDoc('${pid}','${d.key}')"><i class="fas fa-trash"></i></button>
+            </div>
+        `).join('');
+    }).catch(() => { list.innerHTML = '<p class="text-muted text-center">Error</p>'; });
+};
+window.addProjectDoc = async function() {
+    const pid = (document.getElementById('doc-pid').value || '').trim();
+    const title = (document.getElementById('doc-title').value || '').trim();
+    const url = (document.getElementById('doc-url').value || '').trim();
+    const size = (document.getElementById('doc-size').value || '').trim();
+    if (!pid) return alert('Project ID required');
+    if (!title) return alert('Title required');
+    if (!url) return alert('File URL required (upload or paste)');
+    try {
+        await push(ref(db, `documents/${pid}`), {
+            title, name: title, url, size, date: Date.now(), ts: Date.now()
+        });
+        alert('Document added!');
+        document.getElementById('doc-title').value = '';
+        document.getElementById('doc-url').value = '';
+        document.getElementById('doc-size').value = '';
+        loadProjectDocs();
+    } catch (e) { alert('Fail: ' + e.message); }
+};
+window.deleteProjectDoc = function(pid, key) {
+    if (!confirm('Delete this document?')) return;
+    remove(ref(db, `documents/${pid}/${key}`)).then(() => loadProjectDocs());
+};
+
+const CLOUD_NAME = "sjt8mlws", UPLOAD_PRESET = "Naeem786";
+let currentTargetInputId = "";
+window.triggerUpload = function(id) { currentTargetInputId=id; document.getElementById('adminFileInput').click(); };
+document.getElementById('adminFileInput').addEventListener('change', async function() {
+    const file = this.files[0]; if(!file) return;
+    const fd = new FormData(); fd.append('file',file); fd.append('upload_preset',UPLOAD_PRESET);
+    try {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,{method:'POST',body:fd});
+        const r = await res.json();
+        if (r.secure_url) {
+            document.getElementById(currentTargetInputId).value = r.secure_url;
+            alert('Uploaded');
+        } else alert('Upload failed');
+    } catch(e) { alert('Upload failed'); }
+});
+
+loadChatUsers();
+
+/* ===== DASHBOARD + DRILL-DOWN ===== */
+window._cacheUpdates = window._cacheUpdates || {};
+window._cacheComplaints = window._cacheComplaints || {};
+window._seenUpdates = {};
+window._seenComplaints = {};
+try { window._seenUpdates = JSON.parse(localStorage.getItem('admin_seen_updates') || '{}') || {}; } catch (e) {}
+try { window._seenComplaints = JSON.parse(localStorage.getItem('admin_seen_complaints') || '{}') || {}; } catch (e) {}
+
+window.adminResetTour = function() {
+    try { localStorage.removeItem('mrcrazy_feature_tour_v1'); } catch (e) {}
+    alert('Tour flag cleared on this browser. User devices need localStorage key mrcrazy_feature_tour_v1 removed.');
+};
+
+function markUpdateSeen(pid, rid) {
+    if (!window._seenUpdates[pid]) window._seenUpdates[pid] = {};
+    window._seenUpdates[pid][rid] = true;
+    try { localStorage.setItem('admin_seen_updates', JSON.stringify(window._seenUpdates)); } catch (e) {}
+}
+function markComplaintSeen(pid, cid) {
+    if (!window._seenComplaints[pid]) window._seenComplaints[pid] = {};
+    window._seenComplaints[pid][cid] = true;
+    try { localStorage.setItem('admin_seen_complaints', JSON.stringify(window._seenComplaints)); } catch (e) {}
+}
+function isUpdateNew(pid, rid) { return !(window._seenUpdates[pid] && window._seenUpdates[pid][rid]); }
+function isComplaintNew(pid, cid) { return !(window._seenComplaints[pid] && window._seenComplaints[pid][cid]); }
+function statusColor(st) {
+    st = String(st || '').toLowerCase();
+    if (st === 'working') return '#3567d6';
+    if (st === 'complete' || st === 'resolved') return '#1f9d67';
+    if (st === 'close') return '#d6337e';
+    return '#f0973f';
+}
+function setText(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.innerText = String(val);
+}
+
+window.refreshDashboardStats = async function() {
+    var totalProj = 0, totalUpd = 0, totalComp = 0, pending = 0, closeC = 0, completeC = 0;
+    var pendingHtml = [];
+    try {
+        var uSnap = await get(ref(db, 'users'));
+        if (uSnap && uSnap.exists()) totalProj = Object.keys(uSnap.val() || {}).length;
+        setText('d-total-projects', totalProj);
+
+        var upSnap = await get(ref(db, 'updateRequests'));
+        window._cacheUpdates = (upSnap && upSnap.exists()) ? (upSnap.val() || {}) : {};
+        var data = window._cacheUpdates;
+        for (var pid in data) {
+            if (!data[pid] || typeof data[pid] !== 'object') continue;
+            for (var rid in data[pid]) {
+                var req = data[pid][rid] || {};
+                totalUpd++;
+                var st = String(req.status || 'Pending').toLowerCase();
+                if (st === 'pending' || st === 'working') {
+                    pending++;
+                    pendingHtml.push({ type: 'Update', pid: pid, id: rid, st: req.status || 'Pending', ts: req.timestamp || 0, details: String(req.details || '').slice(0, 80), trx: req.trxId || rid });
+                }
+                if (st === 'close') closeC++;
+                if (st === 'complete') completeC++;
+            }
+        }
+        setText('d-total-updates', totalUpd);
+
+        var cSnap = await get(ref(db, 'complaints'));
+        window._cacheComplaints = (cSnap && cSnap.exists()) ? (cSnap.val() || {}) : {};
+        data = window._cacheComplaints;
+        for (var pid2 in data) {
+            if (!data[pid2] || typeof data[pid2] !== 'object') continue;
+            for (var cid in data[pid2]) {
+                var c = data[pid2][cid] || {};
+                totalComp++;
+                var st2 = String(c.status || 'Pending').toLowerCase();
+                if (st2 === 'pending' || st2 === 'working') {
+                    pending++;
+                    pendingHtml.push({ type: 'Complaint', pid: pid2, id: cid, st: c.status || 'Pending', ts: c.timestamp || 0, details: String(c.details || '').slice(0, 80), trx: c.type || cid });
+                }
+                if (st2 === 'close') closeC++;
+                if (st2 === 'complete' || st2 === 'resolved') completeC++;
+            }
+        }
+        setText('d-total-complaints', totalComp);
+        setText('d-total-pending', pending);
+        setText('d-st-pending', pending);
+        setText('d-st-close', closeC);
+        setText('d-st-complete', completeC);
+
+        pendingHtml.sort(function(a, b) { return (b.ts || 0) - (a.ts || 0); });
+        var box = document.getElementById('dashboard-pending-list');
+        if (box) {
+            if (!pendingHtml.length) box.innerHTML = '<p class="text-muted text-center">Koi pending item nahi</p>';
+            else {
+                box.innerHTML = pendingHtml.slice(0, 40).map(function(item) {
+                    var click = item.type === 'Update'
+                        ? "openUpdatesHub();setTimeout(function(){openProjectUpdates('" + item.pid + "');},200);"
+                        : "openComplaintsHub();setTimeout(function(){openProjectComplaints('" + item.pid + "');},200);";
+                    return '<div class="data-card" style="border-left-color:' + statusColor(item.st) + ';cursor:pointer;" onclick="' + click + '">' +
+                        '<div style="display:flex;justify-content:space-between;"><strong>' + item.type + ' · ' + item.pid + '</strong>' +
+                        '<span class="status-badge" style="background:' + statusColor(item.st) + ';">' + item.st + '</span></div>' +
+                        '<div class="text-muted" style="font-size:12px;margin-top:4px;">' + String(item.trx).replace(/</g,'&lt;') + '</div>' +
+                        '<div style="font-size:12px;margin-top:4px;">' + String(item.details || '').replace(/</g,'&lt;') + '</div></div>';
+                }).join('');
+            }
+        }
+        renderUpdatesHub();
+        renderComplaintsHub();
+    } catch (err) { console.error('refreshDashboardStats', err); }
+};
+
+window.openUpdatesHub = function() { switchTab('view-updates'); showUpdatesHub(); };
+window.openComplaintsHub = function() { switchTab('view-complaints'); showComplaintsHub(); };
+
+window.showUpdatesHub = function() {
+    var back = document.getElementById('updates-drill-back');
+    var list = document.getElementById('updates-hub-list');
+    var box = document.getElementById('updates-container');
+    if (back) back.classList.add('hidden');
+    if (list) list.style.display = 'block';
+    if (box) { box.style.display = 'none'; box.innerHTML = ''; }
+    renderUpdatesHub();
+};
+window.showComplaintsHub = function() {
+    var back = document.getElementById('complaints-drill-back');
+    var list = document.getElementById('complaints-hub-list');
+    var box = document.getElementById('complaints-container');
+    if (back) back.classList.add('hidden');
+    if (list) list.style.display = 'block';
+    if (box) { box.style.display = 'none'; box.innerHTML = ''; }
+    renderComplaintsHub();
+};
+
+window.renderUpdatesHub = function() {
+    var data = window._cacheUpdates || {};
+    var list = document.getElementById('updates-hub-list');
+    if (!list) return;
+    var pids = Object.keys(data).filter(function(pid) { return data[pid] && typeof data[pid] === 'object'; });
+    pids.sort(function(a, b) {
+        var maxA = 0, maxB = 0, k;
+        for (k in data[a]) maxA = Math.max(maxA, (data[a][k] && data[a][k].timestamp) || 0);
+        for (k in data[b]) maxB = Math.max(maxB, (data[b][k] && data[b][k].timestamp) || 0);
+        return maxB - maxA;
+    });
+    if (!pids.length) { list.innerHTML = '<p class="text-muted text-center">No update requests</p>'; return; }
+    list.innerHTML = pids.map(function(pid) {
+        var reqs = data[pid] || {};
+        var keys = Object.keys(reqs);
+        var newCount = keys.filter(function(k) { return isUpdateNew(pid, k); }).length;
+        var pend = keys.filter(function(k) {
+            var s = String((reqs[k] && reqs[k].status) || 'pending').toLowerCase();
+            return s === 'pending' || s === 'working';
+        }).length;
+        return '<div class="pid-card" onclick="openProjectUpdates(\'' + pid + '\')">' +
+            '<div><strong><i class="fas fa-folder" style="color:#3567d6;margin-right:6px;"></i>' + pid + '</strong>' +
+            '<div class="counts">' + keys.length + ' requests · ' + pend + ' pending</div></div>' +
+            '<div>' + (newCount ? '<span class="status-badge" style="background:#ef4562;">NEW ' + newCount + '</span>' : '') +
+            '<i class="fas fa-chevron-right" style="color:#7d8aa0;margin-left:8px;"></i></div></div>';
+    }).join('');
+};
+
+window.renderComplaintsHub = function() {
+    var data = window._cacheComplaints || {};
+    var list = document.getElementById('complaints-hub-list');
+    if (!list) return;
+    var pids = Object.keys(data).filter(function(pid) { return data[pid] && typeof data[pid] === 'object'; });
+    pids.sort(function(a, b) {
+        var maxA = 0, maxB = 0, k;
+        for (k in data[a]) maxA = Math.max(maxA, (data[a][k] && data[a][k].timestamp) || 0);
+        for (k in data[b]) maxB = Math.max(maxB, (data[b][k] && data[b][k].timestamp) || 0);
+        return maxB - maxA;
+    });
+    if (!pids.length) { list.innerHTML = '<p class="text-muted text-center">No complaints</p>'; return; }
+    list.innerHTML = pids.map(function(pid) {
+        var reqs = data[pid] || {};
+        var keys = Object.keys(reqs);
+        var newCount = keys.filter(function(k) { return isComplaintNew(pid, k); }).length;
+        var pend = keys.filter(function(k) {
+            var s = String((reqs[k] && reqs[k].status) || 'pending').toLowerCase();
+            return s === 'pending' || s === 'working';
+        }).length;
+        return '<div class="pid-card" onclick="openProjectComplaints(\'' + pid + '\')">' +
+            '<div><strong><i class="fas fa-headset" style="color:#d6337e;margin-right:6px;"></i>' + pid + '</strong>' +
+            '<div class="counts">' + keys.length + ' complaints · ' + pend + ' pending</div></div>' +
+            '<div>' + (newCount ? '<span class="status-badge" style="background:#ef4562;">NEW ' + newCount + '</span>' : '') +
+            '<i class="fas fa-chevron-right" style="color:#7d8aa0;margin-left:8px;"></i></div></div>';
+    }).join('');
+};
+
+window.openProjectUpdates = function(pid) {
+    var list = document.getElementById('updates-hub-list');
+    var back = document.getElementById('updates-drill-back');
+    var box = document.getElementById('updates-container');
+    if (list) list.style.display = 'none';
+    if (back) back.classList.remove('hidden');
+    if (!box) return;
+    box.style.display = 'block';
+    var data = (window._cacheUpdates || {})[pid] || {};
+    var keys = Object.keys(data).sort(function(a, b) { return (data[b].timestamp || 0) - (data[a].timestamp || 0); });
+    if (!keys.length) { box.innerHTML = '<p class="text-muted text-center">No requests</p>'; return; }
+    var html = '<div class="project-group-box"><div class="project-group-title"><i class="fas fa-project-diagram" style="color:#3567d6;"></i> Project: ' + pid + '</div>';
+    keys.forEach(function(rid) {
+        var req = data[rid] || {};
+        var sc = statusColor(req.status);
+        var isNew = isUpdateNew(pid, rid);
+        markUpdateSeen(pid, rid);
+        var details = String(req.details || '').replace(/</g, '&lt;');
+        var reply = String(req.adminReply || '').replace(/</g, '&lt;');
+        var trx = String(req.trxId || rid).replace(/</g, '&lt;');
+        html += '<div class="data-card" style="border-left-color:' + sc + ';">';
+        if (isNew) html += '<span class="new-badge">NEW</span>';
+        var refNo = String(req.refNo || req.trxId || rid).replace(/</g, '&lt;');
+        html += '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;align-items:center;"><div><div style="font-size:10px;font-weight:800;color:#7d8aa0;text-transform:uppercase;">Update No</div><strong style="color:#3567d6;font-family:JetBrains Mono,monospace;">' + refNo + '</strong> <button type="button" class="btn btn-outline btn-pill" style="padding:4px 8px;margin:0;" onclick="copyAdminRef(\'' + refNo.replace(/'/g,'') + '\')"><i class="fas fa-copy"></i></button></div>';
+        if (!req.appReadyCreated) html += '<button class="btn btn-upload btn-pill" type="button" onclick="preparePublishLink(\'' + pid + '\',\'' + rid + '\',\'update\')">Publish APK</button>';
+        html += '</div><div class="detail-box">' + details + '</div>';
+        if (req.screenshot) html += '<button class="btn btn-outline btn-pill" type="button" style="margin-top:6px;" onclick="openLightbox(\'' + String(req.screenshot).replace(/'/g, '') + '\')"><i class="fas fa-image"></i> View Image</button>';
+        html += '<div style="margin:8px 0;"><span class="status-badge" style="background:' + sc + ';color:#fff;">' + (req.status || 'Pending') + '</span></div>';
+        html += '<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.08);">';
+        html += '<label style="font-size:12px;color:#7d8aa0;">Admin Reply</label>';
+        html += '<textarea id="upd-reply-' + pid + '-' + rid + '" rows="2" placeholder="Reply likhein..." style="margin-top:6px;">' + reply + '</textarea>';
+        html += '<div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap;">';
+        html += '<input type="file" id="upd-img-' + pid + '-' + rid + '" accept="image/*" style="font-size:12px;flex:1;min-width:120px;">';
+        html += '<button class="btn btn-upload btn-pill" type="button" onclick="saveUpdateReply(\'' + pid + '\',\'' + rid + '\')"><i class="fas fa-reply"></i> 🍁 Send Reply</button></div>';
+        if (req.adminReplyImage) html += '<button class="btn btn-outline btn-pill" type="button" style="margin-top:6px;" onclick="openLightbox(\'' + String(req.adminReplyImage).replace(/'/g,'') + '\')"><i class="fas fa-image"></i> Reply Image</button>';
+        html += '</div>';
+        html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">';
+        html += '<button class="btn btn-outline btn-pill" type="button" onclick="changeUpdateStatus(\'' + pid + '\',\'' + rid + '\',\'Pending\')">Pending</button>';
+        html += '<button class="btn btn-working btn-pill" type="button" onclick="changeUpdateStatus(\'' + pid + '\',\'' + rid + '\',\'Working\')">Working</button>';
+        html += '<button class="btn btn-close-st btn-pill" type="button" onclick="changeUpdateStatus(\'' + pid + '\',\'' + rid + '\',\'Close\')">Close</button>';
+        html += '<button class="btn btn-success btn-pill" type="button" onclick="changeUpdateStatus(\'' + pid + '\',\'' + rid + '\',\'Complete\')">Complete</button>';
+        html += '<button class="btn btn-danger btn-pill" type="button" onclick="deleteUpdate(\'' + pid + '\',\'' + rid + '\')"><i class="fas fa-trash"></i></button>';
+        html += '</div></div>';
+    });
+    html += '</div>';
+    box.innerHTML = html;
+};
+
+window.openProjectComplaints = function(pid) {
+    var list = document.getElementById('complaints-hub-list');
+    var back = document.getElementById('complaints-drill-back');
+    var box = document.getElementById('complaints-container');
+    if (list) list.style.display = 'none';
+    if (back) back.classList.remove('hidden');
+    if (!box) return;
+    box.style.display = 'block';
+    var data = (window._cacheComplaints || {})[pid] || {};
+    var keys = Object.keys(data).sort(function(a, b) { return (data[b].timestamp || 0) - (data[a].timestamp || 0); });
+    if (!keys.length) { box.innerHTML = '<p class="text-muted text-center">No complaints</p>'; return; }
+    var html = '<div class="project-group-box"><div class="project-group-title"><i class="fas fa-headset" style="color:#d6337e;"></i> Project: ' + pid + '</div>';
+    keys.forEach(function(cid) {
+        var c = data[cid] || {};
+        var st = c.status || 'Pending';
+        var sc = statusColor(st);
+        var isNew = isComplaintNew(pid, cid);
+        markComplaintSeen(pid, cid);
+        var details = String(c.details || '').replace(/</g, '&lt;');
+        var reply = String(c.adminReply || '').replace(/</g, '&lt;');
+        html += '<div class="data-card" style="border-left-color:' + sc + ';">';
+        if (isNew) html += '<span class="new-badge">NEW</span>';
+        var cref = String(c.refNo || c.complaintNo || c.trxId || cid).replace(/</g, '&lt;');
+        html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;"><div><strong style="color:#12877f;text-transform:capitalize;">' + String(c.type || '-') + ' Issue</strong><div style="font-size:10px;font-weight:800;color:#7d8aa0;text-transform:uppercase;margin-top:4px;">Complaint No</div><strong style="color:#d6337e;font-family:JetBrains Mono,monospace;">' + cref + '</strong> <button type="button" class="btn btn-outline btn-pill" style="padding:4px 8px;margin:0;" onclick="copyAdminRef(\'' + cref.replace(/'/g,'') + '\')"><i class="fas fa-copy"></i></button></div>';
+        html += '<span class="status-badge" style="background:' + sc + ';color:#fff;">' + st + '</span></div>';
+        html += '<div class="detail-box">' + details + '</div>';
+        if (c.attachedImage) html += '<button class="btn btn-outline btn-pill" type="button" style="width:100%;margin-top:6px;" onclick="openLightbox(\'' + String(c.attachedImage).replace(/'/g, '') + '\')"><i class="fas fa-image"></i> View Image</button>';
+        html += '<div style="margin-top:10px;"><label style="font-size:12px;color:#7d8aa0;">Reply (optional)</label>';
+        html += '<textarea id="comp-reply-' + pid + '-' + cid + '" rows="2" placeholder="Complaint reply..." style="margin-top:4px;">' + reply + '</textarea>';
+        html += '<div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap;">';
+        html += '<input type="file" id="comp-img-' + pid + '-' + cid + '" accept="image/*" style="font-size:12px;flex:1;min-width:120px;">';
+        html += '<button class="btn btn-upload btn-pill" type="button" onclick="saveComplaintReply(\'' + pid + '\',\'' + cid + '\')"><i class="fas fa-reply"></i> 🍁 Save Reply</button></div>';
+        if (c.adminReplyImage) html += '<button class="btn btn-outline btn-pill" type="button" style="margin-top:6px;" onclick="openLightbox(\'' + String(c.adminReplyImage).replace(/'/g,'') + '\')"><i class="fas fa-image"></i> Reply Image</button>';
+        html += '</div>';
+        html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">';
+        html += '<button class="btn btn-outline btn-pill" type="button" onclick="setComplaintStatus(\'' + pid + '\',\'' + cid + '\',\'Pending\')">Pending</button>';
+        html += '<button class="btn btn-working btn-pill" type="button" onclick="setComplaintStatus(\'' + pid + '\',\'' + cid + '\',\'Working\')">Working</button>';
+        html += '<button class="btn btn-close-st btn-pill" type="button" onclick="setComplaintStatus(\'' + pid + '\',\'' + cid + '\',\'Close\')">Close</button>';
+        html += '<button class="btn btn-success btn-pill" type="button" onclick="setComplaintStatus(\'' + pid + '\',\'' + cid + '\',\'Complete\')">Complete</button>';
+        html += '<button class="btn btn-danger btn-pill" type="button" onclick="deleteComplaint(\'' + pid + '\',\'' + cid + '\')"><i class="fas fa-trash"></i></button></div>';
+        if (!c.appReadyCreated) html += '<button class="btn btn-upload btn-pill" type="button" style="margin-top:8px;width:100%;" onclick="preparePublishLink(\'' + pid + '\',\'' + cid + '\',\'complaint\')"><i class="fas fa-box-open"></i> Publish APK</button>';
+        html += '</div>';
+    });
+    html += '</div>';
+    box.innerHTML = html;
+};
+
+setTimeout(function() {
+    try { if (typeof refreshDashboardStats === 'function') refreshDashboardStats(); } catch (e) { console.error(e); }
+}, 700);
+
+/* ===== RATINGS ===== */
+window.loadRatingsPanel = async function() {
+    var byBox = document.getElementById('ratings-by-project');
+    var recentBox = document.getElementById('ratings-recent');
+    var fbBox = document.getElementById('feedback-list');
+    if (byBox) byBox.innerHTML = '<p class="text-muted text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+    try {
+        var rSnap = await get(ref(db, 'allRatings'));
+        var fSnap = await get(ref(db, 'allFeedback'));
+        var ratings = [];
+        if (rSnap && rSnap.exists()) {
+            var rv = rSnap.val() || {};
+            Object.keys(rv).forEach(function(k) {
+                var x = rv[k] || {};
+                ratings.push({
+                    id: k,
+                    projectId: x.projectId || 'unknown',
+                    stars: Number(x.stars) || 0,
+                    comment: x.comment || '',
+                    type: x.type || '',
+                    trxId: x.trxId || '',
+                    ts: x.timestamp || 0
+                });
+            });
+        }
+        ratings.sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+
+        var totalStars = 0;
+        ratings.forEach(function(r){ totalStars += r.stars; });
+        var avg = ratings.length ? (totalStars / ratings.length) : 0;
+        var elAvg = document.getElementById('r-avg');
+        var elCnt = document.getElementById('r-count');
+        if (elAvg) elAvg.innerText = ratings.length ? avg.toFixed(1) : '—';
+        if (elCnt) elCnt.innerText = String(ratings.length);
+
+        var byProj = {};
+        ratings.forEach(function(r) {
+            if (!byProj[r.projectId]) byProj[r.projectId] = { sum: 0, n: 0, list: [] };
+            byProj[r.projectId].sum += r.stars;
+            byProj[r.projectId].n += 1;
+            byProj[r.projectId].list.push(r);
+        });
+        var pids = Object.keys(byProj).sort(function(a,b){ return byProj[b].n - byProj[a].n; });
+        if (byBox) {
+            if (!pids.length) byBox.innerHTML = '<p class="text-muted text-center">No ratings yet</p>';
+            else {
+                byBox.innerHTML = pids.map(function(pid) {
+                    var g = byProj[pid];
+                    var a = (g.sum / g.n).toFixed(1);
+                    var stars = '';
+                    var rounded = Math.round(Number(a));
+                    for (var i=0;i<rounded;i++) stars += '★';
+                    for (var j=rounded;j<5;j++) stars += '☆';
+                    return '<div class="pid-card" style="cursor:default;flex-direction:column;align-items:stretch;gap:8px;">' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+                        '<strong><i class="fas fa-folder" style="color:#3567d6;margin-right:6px;"></i>' + pid + '</strong>' +
+                        '<span style="color:#f5a623;font-weight:700;">' + stars + ' ' + a + '</span></div>' +
+                        '<div class="counts">' + g.n + ' review(s)</div>' +
+                        g.list.slice(0,5).map(function(r) {
+                            var st = '';
+                            for (var s=0;s<r.stars;s++) st += '★';
+                            return '<div style="font-size:12px;padding:6px 8px;background:#f4f7fb;border-radius:8px;margin-top:4px;">' +
+                                '<span style="color:#f5a623;">' + st + '</span>' +
+                                (r.trxId ? ' · TRX: ' + String(r.trxId).replace(/</g,'&lt;') : '') +
+                                (r.comment ? '<div style="margin-top:3px;color:#3b4252;">' + String(r.comment).replace(/</g,'&lt;') + '</div>' : '') +
+                                '<div class="text-muted" style="font-size:10px;margin-top:2px;">' + (r.ts ? new Date(r.ts).toLocaleString() : '') + '</div></div>';
+                        }).join('') +
+                        '</div>';
+                }).join('');
+            }
+        }
+
+        if (recentBox) {
+            if (!ratings.length) recentBox.innerHTML = '<p class="text-muted text-center">No ratings</p>';
+            else {
+                recentBox.innerHTML = ratings.slice(0, 40).map(function(r) {
+                    var st = '';
+                    for (var s=0;s<r.stars;s++) st += '★';
+                    return '<div class="data-card" style="border-left-color:#f5a623;">' +
+                        '<div style="display:flex;justify-content:space-between;"><strong>' + (r.projectId||'') + '</strong>' +
+                        '<span style="color:#f5a623;font-weight:700;">' + st + ' (' + r.stars + ')</span></div>' +
+                        (r.trxId ? '<div class="text-muted" style="font-size:12px;margin-top:4px;">TRX: ' + String(r.trxId).replace(/</g,'&lt;') + (r.type ? ' · ' + r.type : '') + '</div>' : '') +
+                        (r.comment ? '<div class="detail-box" style="margin-top:6px;">' + String(r.comment).replace(/</g,'&lt;') + '</div>' : '') +
+                        '<div class="text-muted" style="font-size:11px;margin-top:6px;">' + (r.ts ? new Date(r.ts).toLocaleString() : '') + '</div></div>';
+                }).join('');
+            }
+        }
+
+        var feedback = [];
+        var yesC = 0, noC = 0;
+        if (fSnap && fSnap.exists()) {
+            var fv = fSnap.val() || {};
+            Object.keys(fv).forEach(function(k) {
+                var x = fv[k] || {};
+                var ans = String(x.answer || '').toLowerCase();
+                if (ans === 'yes') yesC++;
+                if (ans === 'no') noC++;
+                feedback.push({
+                    projectId: x.projectId || 'unknown',
+                    answer: ans,
+                    type: x.type || '',
+                    trxId: x.trxId || '',
+                    ts: x.timestamp || 0
+                });
+            });
+        }
+        feedback.sort(function(a,b){ return (b.ts||0)-(a.ts||0); });
+        var elYes = document.getElementById('r-yes');
+        var elNo = document.getElementById('r-no');
+        if (elYes) elYes.innerText = String(yesC);
+        if (elNo) elNo.innerText = String(noC);
+
+        if (fbBox) {
+            if (!feedback.length) fbBox.innerHTML = '<p class="text-muted text-center">No Yes/No answers yet</p>';
+            else {
+                fbBox.innerHTML = feedback.slice(0, 50).map(function(f) {
+                    var col = f.answer === 'yes' ? '#1f9d67' : '#ef4562';
+                    var label = f.answer === 'yes' ? 'YES — Solved' : 'NO — Not solved';
+                    return '<div class="data-card" style="border-left-color:' + col + ';">' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+                        '<strong>' + (f.projectId||'') + '</strong>' +
+                        '<span class="status-badge" style="background:' + col + ';">' + label + '</span></div>' +
+                        (f.trxId ? '<div class="text-muted" style="font-size:12px;margin-top:4px;">TRX: ' + String(f.trxId).replace(/</g,'&lt;') + (f.type ? ' · ' + f.type : '') + '</div>' : '') +
+                        '<div class="text-muted" style="font-size:11px;margin-top:6px;">' + (f.ts ? new Date(f.ts).toLocaleString() : '') + '</div></div>';
+                }).join('');
+            }
+        }
+    } catch (e) {
+        console.error(e);
+        if (byBox) byBox.innerHTML = '<p class="text-muted text-center">Error loading ratings</p>';
+    }
+};
+
+/* ========== NEW ADMIN FEATURES ========== */
+window._bulkSelected = {}; // key: type|pid|id
+window._adminNotifs = [];
+window._searchCacheUsers = null;
+
+// ADMIN PASSWORD (no public hint)
+window.ADMIN_PASSWORD = 'Naeem*786';
+window.ADMIN_RECOVERY = '3640273059539';
+window.unlockAdmin = function() {
+    const pin = (document.getElementById('pin-input').value || '').trim();
+    const saved = localStorage.getItem('admin_password') || window.ADMIN_PASSWORD;
+    if (pin === saved || pin === window.ADMIN_PASSWORD) {
+        document.getElementById('pin-lock').classList.add('hidden');
+        sessionStorage.setItem('admin_unlocked', '1');
+        try { if (typeof playAdminSound === 'function') playAdminSound('success'); } catch(e){}
+        try { logAdminActivity('Panel unlocked'); } catch(e){}
+    } else {
+        try { if (typeof playAdminSound === 'function') playAdminSound('error'); } catch(e){}
+        alert('Wrong password');
+        document.getElementById('pin-input').value = '';
+    }
+};
+window.showAdminForgot = function() {
+    document.getElementById('admin-login-step').classList.add('hidden');
+    document.getElementById('admin-forgot-step').classList.remove('hidden');
+    var r = document.getElementById('admin-recover-result');
+    if (r) r.classList.add('hidden');
+    var inp = document.getElementById('admin-recover-code');
+    if (inp) inp.value = '';
+};
+window.hideAdminForgot = function() {
+    document.getElementById('admin-forgot-step').classList.add('hidden');
+    document.getElementById('admin-login-step').classList.remove('hidden');
+};
+window.verifyAdminRecover = function() {
+    var code = (document.getElementById('admin-recover-code').value || '').trim();
+    if (code !== window.ADMIN_RECOVERY) {
+        try { if (typeof playAdminSound === 'function') playAdminSound('error'); } catch(e){}
+        alert('Invalid recovery code');
+        return;
+    }
+    var pass = localStorage.getItem('admin_password') || window.ADMIN_PASSWORD;
+    var box = document.getElementById('admin-recover-result');
+    var el = document.getElementById('admin-recover-pass');
+    if (el) el.textContent = pass;
+    if (box) box.classList.remove('hidden');
+    var pinInp = document.getElementById('pin-input');
+    if (pinInp) pinInp.value = pass;
+    try { if (typeof playAdminSound === 'function') playAdminSound('success'); } catch(e){}
+};
+window.lockAdmin = function() {
+    sessionStorage.removeItem('admin_unlocked');
+    document.getElementById('pin-lock').classList.remove('hidden');
+    document.getElementById('pin-input').value = '';
+    hideAdminForgot();
+};
+window.saveAdminPin = function() {
+    const p = (document.getElementById('new-pin').value || '').trim();
+    if (!p || p.length < 4) return alert('Password kam az kam 4 characters');
+    localStorage.setItem('admin_password', p);
+    document.getElementById('new-pin').value = '';
+    alert('Password saved');
+    try { logAdminActivity('Password changed'); } catch(e){}
+};
+(function checkPin() {
+    if (sessionStorage.getItem('admin_unlocked') === '1') {
+        document.getElementById('pin-lock').classList.add('hidden');
+    }
+})();
+
+// Dark mode
+window.toggleAdminDark = function() {
+    document.body.classList.toggle('admin-dark');
+    localStorage.setItem('admin_dark', document.body.classList.contains('admin-dark') ? '1' : '0');
+};
+if (localStorage.getItem('admin_dark') === '1') document.body.classList.add('admin-dark');
+
+// Activity log
+window.logAdminActivity = function(text) {
+    try {
+        let arr = JSON.parse(localStorage.getItem('admin_activity') || '[]');
+        arr.unshift({ text, ts: Date.now() });
+        arr = arr.slice(0, 50);
+        localStorage.setItem('admin_activity', JSON.stringify(arr));
+        renderAdminActivity();
+    } catch(e) {}
+};
+window.renderAdminActivity = function() {
+    const el = document.getElementById('admin-activity-log');
+    if (!el) return;
+    let arr = [];
+    try { arr = JSON.parse(localStorage.getItem('admin_activity') || '[]'); } catch(e) {}
+    if (!arr.length) { el.innerHTML = '<p class="text-muted text-center">No activity yet</p>'; return; }
+    el.innerHTML = arr.slice(0, 20).map(a =>
+        `<div class="activity-log-item"><div class="dot"></div><div><strong>${a.text}</strong><div class="text-muted">${new Date(a.ts).toLocaleString()}</div></div></div>`
+    ).join('');
+};
+window.clearAdminActivity = function() {
+    localStorage.removeItem('admin_activity');
+    renderAdminActivity();
+};
+
+// Global search
+window.runGlobalSearch = async function(q) {
+    const box = document.getElementById('search-results');
+    q = (q || '').trim().toLowerCase();
+    if (!q || q.length < 2) { box.classList.remove('show'); box.innerHTML = ''; return; }
+    if (!window._searchCacheUsers) {
+        try {
+            const snap = await get(ref(db, 'users'));
+            window._searchCacheUsers = snap.exists() ? snap.val() : {};
+        } catch(e) { window._searchCacheUsers = {}; }
+    }
+    const users = window._searchCacheUsers || {};
+    const hits = [];
+    for (const pid in users) {
+        const u = users[pid] || {};
+        const blob = [pid, u.userName, u.appName, u.callNum, u.phone, u.waNum, u.secNum].join(' ').toLowerCase();
+        if (blob.includes(q)) {
+            hits.push({ pid, name: u.userName || u.appName || pid, phone: u.callNum || u.waNum || '', status: u.status || '' });
+        }
+        if (hits.length >= 15) break;
+    }
+    if (!hits.length) {
+        box.innerHTML = '<div class="search-item text-muted">No results</div>';
+        box.classList.add('show');
+        return;
+    }
+    box.innerHTML = hits.map(h =>
+        `<div class="search-item" onclick="goToProject('${h.pid}')"><strong>${h.pid}</strong> · ${h.name}<br><span class="text-muted">${h.phone} · ${h.status}</span></div>`
+    ).join('');
+    box.classList.add('show');
+};
+window.goToProject = function(pid) {
+    document.getElementById('search-results').classList.remove('show');
+    document.getElementById('global-search').value = '';
+    switchTab('manage-users');
+    document.getElementById('u-pid').value = pid;
+    loadUserData();
+    // WhatsApp quick
+    logAdminActivity('Opened project ' + pid);
+};
+document.addEventListener('click', function(e) {
+    const bar = document.querySelector('.global-search-bar');
+    if (bar && !bar.contains(e.target)) {
+        document.getElementById('search-results')?.classList.remove('show');
+    }
+});
+
+// Admin notifications (listen for new updates/complaints)
+window.toggleAdminNotifPanel = function() {
+    document.getElementById('admin-notif-panel').classList.toggle('open');
+};
+window.pushAdminNotif = function(title, body, action) {
+    window._adminNotifs.unshift({ title, body, action, ts: Date.now(), read: false });
+    window._adminNotifs = window._adminNotifs.slice(0, 40);
+    renderAdminNotifList();
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator(); const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.value = 880; g.gain.value = 0.08;
+        o.start(); setTimeout(() => { o.stop(); ctx.close(); }, 180);
+    } catch(e) {}
+};
+window.renderAdminNotifList = function() {
+    const list = document.getElementById('admin-notif-list');
+    const badge = document.getElementById('admin-notif-badge');
+    if (!list) return;
+    const unread = window._adminNotifs.filter(n => !n.read).length;
+    if (badge) {
+        badge.innerText = unread;
+        badge.style.display = unread ? 'flex' : 'none';
+    }
+    if (!window._adminNotifs.length) {
+        list.innerHTML = '<p class="text-muted text-center" style="padding:16px;">No alerts</p>';
+        return;
+    }
+    list.innerHTML = window._adminNotifs.map((n, i) =>
+        `<div class="admin-notif-item ${n.read?'':'unread'}" onclick="openAdminNotif(${i})">
+            <strong>${n.title}</strong>
+            <div class="text-muted">${n.body}</div>
+            <div class="text-muted" style="font-size:10px;margin-top:4px;">${new Date(n.ts).toLocaleString()}</div>
+        </div>`
+    ).join('');
+};
+window.openAdminNotif = function(i) {
+    const n = window._adminNotifs[i];
+    if (!n) return;
+    n.read = true;
+    renderAdminNotifList();
+    if (n.action) try { eval(n.action); } catch(e) {}
+};
+window.clearAdminNotifs = function() {
+    window._adminNotifs = [];
+    renderAdminNotifList();
+};
+// Watch for new items
+let _lastUpdCount = 0, _lastCompCount = 0;
+setInterval(async () => {
+    try {
+        const up = await get(ref(db, 'updateRequests'));
+        const cp = await get(ref(db, 'complaints'));
+        let uc = 0, cc = 0;
+        if (up.exists()) Object.values(up.val()).forEach(g => { if (g) uc += Object.keys(g).length; });
+        if (cp.exists()) Object.values(cp.val()).forEach(g => { if (g) cc += Object.keys(g).length; });
+        if (_lastUpdCount && uc > _lastUpdCount) {
+            pushAdminNotif('New Update Request', (uc - _lastUpdCount) + ' new request(s)', "openUpdatesHub()");
+        }
+        if (_lastCompCount && cc > _lastCompCount) {
+            pushAdminNotif('New Complaint', (cc - _lastCompCount) + ' new complaint(s)', "openComplaintsHub()");
+        }
+        _lastUpdCount = uc;
+        _lastCompCount = cc;
+    } catch(e) {}
+}, 12000);
+
+// Bulk selection
+window.toggleBulkItem = function(type, pid, id, el) {
+    const key = type + '|' + pid + '|' + id;
+    if (window._bulkSelected[key]) delete window._bulkSelected[key];
+    else window._bulkSelected[key] = { type, pid, id };
+    if (el) el.checked = !!window._bulkSelected[key];
+    updateBulkBar();
+};
+window.updateBulkBar = function() {
+    const n = Object.keys(window._bulkSelected).length;
+    const bar = document.getElementById('bulk-bar');
+    const cnt = document.getElementById('bulk-count');
+    if (cnt) cnt.innerText = n + ' selected';
+    if (bar) bar.classList.toggle('show', n > 0);
+};
+window.clearBulkSelection = function() {
+    window._bulkSelected = {};
+    document.querySelectorAll('.bulk-check').forEach(c => c.checked = false);
+    updateBulkBar();
+};
+window.bulkSetStatus = async function(st) {
+    const keys = Object.keys(window._bulkSelected);
+    if (!keys.length) return;
+    if (!confirm(keys.length + ' items ko "' + st + '" karein?')) return;
+    for (const k of keys) {
+        const { type, pid, id } = window._bulkSelected[k];
+        const path = type === 'update' ? `updateRequests/${pid}/${id}` : `complaints/${pid}/${id}`;
+        try {
+            await update(ref(db, path), { status: st });
+            await update(ref(db, `users/${pid}/notifications`), type === 'update' ? { update: true } : { complaint: true });
+        } catch(e) {}
+    }
+    logAdminActivity('Bulk status → ' + st + ' (' + keys.length + ')');
+    clearBulkSelection();
+    alert('Done');
+    if (typeof refreshDashboardStats === 'function') refreshDashboardStats();
+};
+
+// Patch openProjectUpdates / openProjectComplaints to add checkboxes + templates
+const _origOpenUpd = window.openProjectUpdates;
+window.openProjectUpdates = function(pid) {
+    _origOpenUpd(pid);
+    setTimeout(() => injectBulkAndTemplates('update', pid), 50);
+};
+const _origOpenComp = window.openProjectComplaints;
+window.openProjectComplaints = function(pid) {
+    _origOpenComp(pid);
+    setTimeout(() => injectBulkAndTemplates('complaint', pid), 50);
+};
+function injectBulkAndTemplates(type, pid) {
+    const box = document.getElementById(type === 'update' ? 'updates-container' : 'complaints-container');
+    if (!box) return;
+    // Add checkbox to each data-card
+    box.querySelectorAll('.data-card').forEach((card, idx) => {
+        if (card.querySelector('.bulk-check')) return;
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.className = 'bulk-check';
+        cb.style.cssText = 'position:absolute;top:10px;left:10px;width:18px;height:18px;z-index:2;';
+        // try to get id from buttons
+        const btn = card.querySelector('[onclick*="changeUpdateStatus"],[onclick*="setComplaintStatus"],[onclick*="deleteUpdate"],[onclick*="deleteComplaint"]');
+        let id = '';
+        if (btn) {
+            const m = (btn.getAttribute('onclick') || '').match(/'([^']+)'\s*,\s*'([^']+)'/);
+            if (m) id = m[2];
+        }
+        if (!id) id = 'idx' + idx;
+        cb.onchange = function() { toggleBulkItem(type, pid, id, cb); };
+        card.style.position = 'relative';
+        card.style.paddingLeft = '36px';
+        card.insertBefore(cb, card.firstChild);
+    });
+    // Templates under textareas
+    const templates = (localStorage.getItem('admin_reply_templates') || 'Working on it...\nCompleted. Please check.\nNeed more details from your side.\nIssue resolved.').split('\n').filter(Boolean);
+    box.querySelectorAll('textarea[id^="upd-reply-"],textarea[id^="comp-reply-"]').forEach(ta => {
+        if (ta.parentElement.querySelector('.template-chips')) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'template-chips';
+        wrap.style.marginTop = '6px';
+        templates.forEach(t => {
+            const chip = document.createElement('span');
+            chip.className = 'template-chip';
+            chip.innerText = t.length > 28 ? t.slice(0, 28) + '…' : t;
+            chip.onclick = () => { ta.value = t; };
+            wrap.appendChild(chip);
+        });
+        ta.parentElement.appendChild(wrap);
+    });
+    // WhatsApp link if user phone known
+    if (window._searchCacheUsers && window._searchCacheUsers[pid]) {
+        const u = window._searchCacheUsers[pid];
+        const phone = (u.waNum || u.callNum || '').replace(/\D/g, '');
+        if (phone && !box.querySelector('.wa-quick')) {
+            const a = document.createElement('a');
+            a.className = 'btn btn-success btn-pill wa-quick';
+            a.style.cssText = 'margin-bottom:10px;display:inline-flex;text-decoration:none;';
+            a.href = 'https://wa.me/' + (phone.startsWith('92') ? phone : '92' + phone.replace(/^0/, ''));
+            a.target = '_blank';
+            a.innerHTML = '<i class="fab fa-whatsapp"></i> WhatsApp Client';
+            box.insertBefore(a, box.firstChild);
+        }
+    }
+}
+
+// Templates save
+window.saveReplyTemplates = function() {
+    const t = document.getElementById('reply-templates').value || '';
+    localStorage.setItem('admin_reply_templates', t);
+    alert('Templates saved');
+    logAdminActivity('Reply templates updated');
+};
+(function loadTemplatesUI() {
+    setTimeout(() => {
+        const el = document.getElementById('reply-templates');
+        if (el) el.value = localStorage.getItem('admin_reply_templates') || 'Working on it...\nCompleted. Please check.\nNeed more details from your side.\nIssue resolved.';
+        renderAdminActivity();
+    }, 500);
+})();
+
+// Global maintenance
+window.saveGlobalMaintenance = async function() {
+    const active = document.getElementById('gmaint-active').value === 'true';
+    const title = document.getElementById('gmaint-title').value || 'Under Maintenance';
+    const msg = document.getElementById('gmaint-msg').value || '';
+    try {
+        await set(ref(db, 'globalMaintenance'), { active, title, message: msg, ts: Date.now() });
+        alert(active ? 'Global maintenance ON' : 'Global maintenance OFF');
+        logAdminActivity('Global maintenance: ' + (active ? 'ON' : 'OFF'));
+    } catch(e) { alert('Fail: ' + e.message); }
+};
+get(ref(db, 'globalMaintenance')).then(snap => {
+    if (!snap.exists()) return;
+    const g = snap.val();
+    const a = document.getElementById('gmaint-active');
+    if (a) a.value = g.active ? 'true' : 'false';
+    if (document.getElementById('gmaint-title')) document.getElementById('gmaint-title').value = g.title || '';
+    if (document.getElementById('gmaint-msg')) document.getElementById('gmaint-msg').value = g.message || '';
+}).catch(()=>{});
+
+// Targeted push
+window.sendTargetedPush = async function() {
+    const pid = (document.getElementById('target-pid').value || '').trim();
+    const title = (document.getElementById('target-title').value || '').trim() || 'Notification';
+    const body = (document.getElementById('target-body').value || '').trim();
+    if (!pid) return alert('Project ID required');
+    if (!body) return alert('Message required');
+    try {
+        await update(ref(db, `users/${pid}/notifications`), { update: true });
+        await push(ref(db, 'broadcastNotifications'), { title, body, message: body, ts: Date.now(), from: 'admin', target: pid });
+        await push(ref(db, 'adminNotifications'), { title, body, target: pid, ts: Date.now() });
+        alert('Sent to ' + pid);
+        logAdminActivity('Targeted push → ' + pid);
+        document.getElementById('target-title').value = '';
+        document.getElementById('target-body').value = '';
+    } catch(e) { alert('Fail: ' + e.message); }
+};
+
+// CSV export
+window.exportCSV = async function(kind) {
+    let rows = [];
+    try {
+        if (kind === 'projects') {
+            const snap = await get(ref(db, 'users'));
+            if (!snap.exists()) return alert('No data');
+            rows = [['ProjectID', 'UserName', 'AppName', 'Phone', 'WhatsApp', 'Status', 'Type']];
+            Object.entries(snap.val()).forEach(([pid, u]) => {
+                rows.push([pid, u.userName||'', u.appName||'', u.callNum||u.phone||'', u.waNum||'', u.status||'', u.projType||'']);
+            });
+        } else if (kind === 'updates') {
+            const snap = await get(ref(db, 'updateRequests'));
+            rows = [['ProjectID', 'TRX', 'Status', 'Details', 'Timestamp']];
+            if (snap.exists()) {
+                Object.entries(snap.val()).forEach(([pid, group]) => {
+                    Object.entries(group || {}).forEach(([id, r]) => {
+                        rows.push([pid, r.trxId||id, r.status||'', (r.details||'').replace(/\n/g,' '), r.timestamp||'']);
+                    });
+                });
+            }
+        } else if (kind === 'complaints') {
+            const snap = await get(ref(db, 'complaints'));
+            rows = [['ProjectID', 'Type', 'Status', 'Details', 'Timestamp']];
+            if (snap.exists()) {
+                Object.entries(snap.val()).forEach(([pid, group]) => {
+                    Object.entries(group || {}).forEach(([id, c]) => {
+                        rows.push([pid, c.type||'', c.status||'', (c.details||'').replace(/\n/g,' '), c.timestamp||'']);
+                    });
+                });
+            }
+        } else if (kind === 'ratings') {
+            const snap = await get(ref(db, 'allRatings'));
+            rows = [['ProjectID', 'Stars', 'Comment', 'TRX', 'Timestamp']];
+            if (snap.exists()) {
+                Object.values(snap.val()).forEach(r => {
+                    rows.push([r.projectId||'', r.stars||'', (r.comment||'').replace(/\n/g,' '), r.trxId||'', r.timestamp||'']);
+                });
+            }
+        }
+        if (rows.length < 2) return alert('No rows to export');
+        const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'mrcrazy_' + kind + '_' + Date.now() + '.csv';
+        a.click();
+        logAdminActivity('Exported ' + kind + ' CSV');
+    } catch(e) { alert('Export failed: ' + e.message); }
+};
+
+// Update bar chart in refreshDashboardStats
+const _origRefresh = window.refreshDashboardStats;
+window.refreshDashboardStats = async function() {
+    await _origRefresh();
+    try {
+        const p = Number(document.getElementById('d-st-pending')?.innerText || 0);
+        const c = Number(document.getElementById('d-st-close')?.innerText || 0);
+        const done = Number(document.getElementById('d-st-complete')?.innerText || 0);
+        const max = Math.max(p, c, done, 1);
+        const bp = document.getElementById('bar-pending');
+        const bc = document.getElementById('bar-close');
+        const bd = document.getElementById('bar-complete');
+        if (bp) bp.style.height = Math.max(8, (p / max) * 100) + '%';
+        if (bc) bc.style.height = Math.max(8, (c / max) * 100) + '%';
+        if (bd) bd.style.height = Math.max(8, (done / max) * 100) + '%';
+    } catch(e) {}
+};
+
+// switchTab tools
+const _origSwitch = window.switchTab;
+window.switchTab = function(tabId, el) {
+    _origSwitch(tabId, el);
+    if (tabId === 'view-tools') {
+        renderAdminActivity();
+        const elT = document.getElementById('reply-templates');
+        if (elT && !elT.value) elT.value = localStorage.getItem('admin_reply_templates') || '';
+    }
+    if (tabId === 'view-appstore') {
+        if (typeof window.loadAppStoreAdmin === 'function') window.loadAppStoreAdmin();
+    }
+};
+
+/* ========== APPS STORE ADMIN ========== */
+window._asAppsCache = {};
+
+window.rtCmd = function(editorId, cmd) {
+    const el = document.getElementById(editorId);
+    if (!el) return;
+    el.focus();
+    document.execCommand(cmd, false, null);
+};
+window.rtColor = function(editorId, color) {
+    const el = document.getElementById(editorId);
+    if (!el) return;
+    el.focus();
+    document.execCommand('foreColor', false, color);
+};
+
+window.loadAppStoreAdmin = function() {
+    get(ref(db, 'appStore/settings')).then(snap => {
+        const s = snap.exists() ? snap.val() : {};
+        const el = document.getElementById('as-wa-channel');
+        if (el) el.value = s.whatsappChannel || '';
+    }).catch(e => console.warn(e));
+    get(ref(db, 'appStore/apps')).then(snap => {
+        window._asAppsCache = snap.exists() ? (snap.val() || {}) : {};
+        window.renderAppStoreAdminList();
+    }).catch(e => {
+        console.error(e);
+        window._asAppsCache = {};
+        window.renderAppStoreAdminList();
+    });
+};
+
+window.renderAppStoreAdminList = function() {
+    const box = document.getElementById('as-apps-list');
+    if (!box) return;
+    const entries = Object.entries(window._asAppsCache || {});
+    if (!entries.length) {
+        box.innerHTML = '<p class="text-muted text-center">No apps yet. Add one above.</p>';
+        return;
+    }
+    box.innerHTML = entries.map(([id, a]) => {
+        return '<div class="data-card" style="margin-bottom:10px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">' +
+            '<div style="display:flex;gap:10px;align-items:center;">' +
+            (a.iconUrl ? '<img src="' + a.iconUrl + '" style="width:44px;height:44px;border-radius:10px;object-fit:cover;">' : '<div style="width:44px;height:44px;border-radius:10px;background:#e7ecf3;display:flex;align-items:center;justify-content:center;"><i class="fas fa-mobile-alt"></i></div>') +
+            '<div><strong>' + (a.name || '') + '</strong><div class="text-muted" style="font-size:12px;">v' + (a.version || '') + ' · ' + (a.sizeMb || '?') + ' MB · ' + (a.downloads || 0) + ' downloads</div></div>' +
+            '</div>' +
+            '<div style="white-space:nowrap;">' +
+            '<button class="btn btn-info btn-sm" type="button" onclick="editAppStoreApp(\'' + id + '\')"><i class="fas fa-edit"></i></button> ' +
+            '<button class="btn btn-danger btn-sm" type="button" onclick="deleteAppStoreApp(\'' + id + '\')"><i class="fas fa-trash"></i></button>' +
+            '</div></div></div>';
+    }).join('');
+};
+
+window.saveAppStoreSettings = function() {
+    const link = (document.getElementById('as-wa-channel').value || '').trim();
+    update(ref(db, 'appStore/settings'), { whatsappChannel: link }).then(() => {
+        alert('WhatsApp channel link saved');
+        if (typeof logAdminActivity === 'function') logAdminActivity('AppStore WA channel updated');
+    }).catch(e => alert('Save failed: ' + e.message));
+};
+
+window.resetAppStoreForm = function() {
+    document.getElementById('as-edit-id').value = '';
+    document.getElementById('as-name').value = '';
+    document.getElementById('as-icon').value = '';
+    document.getElementById('as-version').value = '1.0.0';
+    document.getElementById('as-size').value = '';
+    document.getElementById('as-order').value = '0';
+    document.getElementById('as-download').value = '';
+    const note = document.getElementById('as-note-editor');
+    const wn = document.getElementById('as-whatsnew-editor');
+    if (note) note.innerHTML = '';
+    if (wn) wn.innerHTML = '';
+    document.getElementById('as-screenshots').value = '';
+};
+
+window.saveAppStoreApp = function() {
+    try {
+        const name = (document.getElementById('as-name').value || '').trim();
+        const downloadUrl = (document.getElementById('as-download').value || '').trim();
+        if (!name) return alert('App name required');
+        if (!downloadUrl) return alert('Download URL required');
+        const editId = (document.getElementById('as-edit-id').value || '').trim();
+        const shotsRaw = (document.getElementById('as-screenshots').value || '').trim();
+        const screenshots = shotsRaw ? shotsRaw.split(/\n+/).map(s => s.trim()).filter(Boolean) : [];
+        const noteEl = document.getElementById('as-note-editor');
+        const wnEl = document.getElementById('as-whatsnew-editor');
+        const payload = {
+            name: name,
+            iconUrl: (document.getElementById('as-icon').value || '').trim(),
+            version: (document.getElementById('as-version').value || '1.0').trim(),
+            sizeMb: (document.getElementById('as-size').value || '').trim(),
+            order: parseInt(document.getElementById('as-order').value, 10) || 0,
+            downloadUrl: downloadUrl,
+            noteHtml: noteEl ? noteEl.innerHTML.trim() : '',
+            whatsNewHtml: wnEl ? wnEl.innerHTML.trim() : '',
+            screenshots: screenshots,
+            updatedAt: Date.now()
+        };
+        const done = () => {
+            alert('App saved successfully!');
+            window.resetAppStoreForm();
+            window.loadAppStoreAdmin();
+            if (typeof logAdminActivity === 'function') logAdminActivity('AppStore app saved: ' + name);
+        };
+        const fail = (e) => {
+            console.error(e);
+            alert('Save failed: ' + (e && e.message ? e.message : e));
+        };
+        if (editId) {
+            const prev = window._asAppsCache[editId] || {};
+            payload.downloads = prev.downloads || 0;
+            update(ref(db, 'appStore/apps/' + editId), payload).then(done).catch(fail);
+        } else {
+            payload.downloads = 0;
+            payload.createdAt = Date.now();
+            push(ref(db, 'appStore/apps'), payload).then(done).catch(fail);
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Error: ' + e.message);
+    }
+};
+
+window.editAppStoreApp = function(id) {
+    const a = window._asAppsCache[id];
+    if (!a) return;
+    document.getElementById('as-edit-id').value = id;
+    document.getElementById('as-name').value = a.name || '';
+    document.getElementById('as-icon').value = a.iconUrl || '';
+    document.getElementById('as-version').value = a.version || '1.0';
+    document.getElementById('as-size').value = a.sizeMb || '';
+    document.getElementById('as-order').value = a.order || 0;
+    document.getElementById('as-download').value = a.downloadUrl || '';
+    const note = document.getElementById('as-note-editor');
+    const wn = document.getElementById('as-whatsnew-editor');
+    if (note) note.innerHTML = a.noteHtml || a.note || '';
+    if (wn) wn.innerHTML = a.whatsNewHtml || a.whatsNew || '';
+    document.getElementById('as-screenshots').value = (a.screenshots || []).join('\n');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.deleteAppStoreApp = function(id) {
+    if (!confirm('Delete this app from store?')) return;
+    remove(ref(db, 'appStore/apps/' + id)).then(() => {
+        window.loadAppStoreAdmin();
+        if (typeof logAdminActivity === 'function') logAdminActivity('AppStore app deleted');
+    }).catch(e => alert('Delete failed: ' + e.message));
+};
+
+window.uploadAppScreenshot = function() {
+    const ta = document.getElementById('as-screenshots');
+    if (!ta) return;
+    let hidden = document.getElementById('as-shot-temp');
+    if (!hidden) {
+        hidden = document.createElement('input');
+        hidden.type = 'text';
+        hidden.id = 'as-shot-temp';
+        hidden.style.display = 'none';
+        document.body.appendChild(hidden);
+    }
+    hidden.value = '';
+    if (typeof triggerUpload === 'function') {
+        const prev = hidden.value;
+        triggerUpload('as-shot-temp');
+        let tries = 0;
+        const t = setInterval(() => {
+            tries++;
+            if (hidden.value && hidden.value !== prev) {
+                clearInterval(t);
+                ta.value = (ta.value ? ta.value + '\n' : '') + hidden.value;
+            }
+            if (tries > 40) clearInterval(t);
+        }, 500);
+    } else {
+        alert('Upload helper not available — paste image URL manually');
+    }
+};
+
+console.log('MrCrazy Admin – Apps Store fixed (window + rich text)');
+</script>
+
+<script>
+/* ===== Admin v5 Oct Theme + tools ===== */
+(function(){
+  "use strict";
+
+  // October theme
+  var root = document.documentElement;
+  root.style.setProperty("--bg", "#f3ebe3");
+  root.style.setProperty("--card", "#fffaf5");
+  root.style.setProperty("--text", "#3a2f28");
+  root.style.setProperty("--muted", "#8a7364");
+  root.style.setProperty("--primary", "#c45c26");
+  root.style.setProperty("--primary-dark", "#8b3a12");
+  root.style.setProperty("--accent", "#d4a017");
+  root.style.setProperty("--danger", "#b33b2e");
+  root.style.setProperty("--info", "#2f6f5e");
+  root.style.setProperty("--pink", "#b33b2e");
+  root.style.setProperty("--success", "#2f6f5e");
+  root.style.setProperty("--border", "rgba(139,58,18,0.12)");
+  root.style.setProperty("--shadow", "0 8px 24px rgba(90,50,20,0.12)");
+  document.body.style.background = "radial-gradient(circle at 12% 8%, rgba(196,92,38,0.12) 0%, transparent 42%), linear-gradient(160deg, #f7efe6 0%, #f0e2d4 50%, #ebe0d4 100%)";
+
+  var st = document.createElement("style");
+  st.textContent =
+    ".btn{position:relative;}"+
+    ".btn:not(.btn-outline)::after{content:' 🍁';}"+
+    ".top-header{background:linear-gradient(135deg,#fff8f2,#f3e2d4)!important;border-bottom:1px solid rgba(196,92,38,0.2)!important;}"+
+    ".sidebar{background:linear-gradient(180deg,#fffaf5,#f5ebe1)!important;}"+
+    ".sidebar-item.active{background:rgba(196,92,38,0.12)!important;color:#8b3a12!important;border-left-color:#c45c26!important;}"+
+    ".pin-lock{background:linear-gradient(160deg,#2a1c14,#3d2818,#1a120c)!important;}"+
+    ".data-card{border-left-width:4px;}"+
+    ".admin-ref-search{margin-bottom:12px;display:flex;gap:8px;}"+
+    ".admin-ref-search input{flex:1;padding:11px 12px;border-radius:12px;border:1px solid var(--border);background:#fff;font-size:13px;}";
+  document.head.appendChild(st);
+
+  // Sounds
+  var _ctx = null;
+  function ctx(){ try{ if(!_ctx)_ctx=new (window.AudioContext||window.webkitAudioContext)(); if(_ctx.state==='suspended')_ctx.resume(); return _ctx; }catch(e){ return null; } }
+  function tone(f,d,type,vol,when){
+    var a=ctx(); if(!a) return;
+    var o=a.createOscillator(), g=a.createGain();
+    o.type=type||'sine'; o.frequency.value=f; g.gain.value=vol||0.07;
+    o.connect(g); g.connect(a.destination);
+    var t0=a.currentTime+(when||0);
+    g.gain.setValueAtTime(vol||0.07,t0);
+    g.gain.exponentialRampToValueAtTime(0.001,t0+d);
+    o.start(t0); o.stop(t0+d+0.02);
+  }
+  window.playAdminSound = function(k){
+    try{
+      if(k==='click') tone(500,0.05,'sine',0.04);
+      else if(k==='success'){ tone(523,0.08,'sine',0.06); tone(659,0.1,'sine',0.06,0.08); tone(784,0.12,'sine',0.05,0.16); }
+      else if(k==='error'){ tone(220,0.12,'square',0.05); tone(180,0.14,'square',0.05,0.1); }
+      else if(k==='copy'){ tone(880,0.06,'sine',0.05); }
+      else tone(480,0.05,'sine',0.04);
+    }catch(e){}
+  };
+  document.addEventListener('click', function(e){
+    if(e.target.closest('button,.btn,.sidebar-item')) playAdminSound('click');
+  }, true);
+
+  window.copyAdminRef = function(text){
+    text = String(text||'');
+    if(!text) return;
+    function ok(){ playAdminSound('copy'); try{ alert('Copied: '+text); }catch(e){} }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(ok).catch(function(){
+        var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand('copy'); ok(); }catch(e){}
+        ta.remove();
+      });
+    } else {
+      var ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); ok(); }catch(e){}
+      ta.remove();
+    }
+  };
+
+  // Search by complaint/update no across cache
+  window.adminSearchByRef = function(kind){
+    var inp = document.getElementById(kind === 'complaint' ? 'search-complaint-ref' : 'search-update-ref');
+    var q = (inp && inp.value || '').trim().toLowerCase();
+    if(!q){ playAdminSound('error'); return alert('Reference number enter karein'); }
+    var cache = kind === 'complaint' ? (window._cacheComplaints||{}) : (window._cacheUpdates||{});
+    var hits = [];
+    Object.keys(cache).forEach(function(pid){
+      var group = cache[pid]||{};
+      Object.keys(group).forEach(function(id){
+        var it = group[id]||{};
+        var refs = [it.refNo, it.trxId, it.complaintNo, id].map(function(x){ return String(x||'').toLowerCase(); });
+        if(refs.some(function(r){ return r && (r===q || r.indexOf(q)>=0); })){
+          hits.push({ pid: pid, id: id, it: it });
+        }
+      });
+    });
+    if(!hits.length){ playAdminSound('error'); return alert('No match for: '+q); }
+    playAdminSound('success');
+    // open first project drill
+    var h = hits[0];
+    if(kind==='complaint' && typeof openProjectComplaints==='function') openProjectComplaints(h.pid);
+    if(kind==='update' && typeof openProjectUpdates==='function') openProjectUpdates(h.pid);
+    setTimeout(function(){
+      var cards = document.querySelectorAll('.data-card');
+      cards.forEach(function(card){
+        var t = (card.textContent||'').toLowerCase();
+        if(t.indexOf(q)>=0){
+          card.style.outline = '2px solid #c45c26';
+          card.scrollIntoView({ behavior:'smooth', block:'center' });
+        }
+      });
+    }, 200);
+    if(hits.length>1) alert(hits.length + ' matches — pehla project open kiya: '+h.pid);
+  };
+
+  function injectSearchBars(){
+    // Updates section
+    var uSec = document.getElementById('view-updates') || document.querySelector('#updates-hub-list') && document.querySelector('#updates-hub-list').parentElement;
+    var uList = document.getElementById('updates-hub-list');
+    if(uList && !document.getElementById('search-update-ref')){
+      var bar = document.createElement('div');
+      bar.className = 'admin-ref-search';
+      bar.innerHTML = '<input id="search-update-ref" placeholder="Search Update No (UPD-…)" onkeydown="if(event.key===\'Enter\')adminSearchByRef(\'update\')">'+
+        '<button class="btn btn-pill" type="button" style="width:auto;margin:0;" onclick="adminSearchByRef(\'update\')"><i class="fas fa-search"></i> 🍁</button>';
+      uList.parentNode.insertBefore(bar, uList);
+    }
+    var cList = document.getElementById('complaints-hub-list');
+    if(cList && !document.getElementById('search-complaint-ref')){
+      var bar2 = document.createElement('div');
+      bar2.className = 'admin-ref-search';
+      bar2.innerHTML = '<input id="search-complaint-ref" placeholder="Search Complaint No (CMP-…)" onkeydown="if(event.key===\'Enter\')adminSearchByRef(\'complaint\')">'+
+        '<button class="btn btn-pill" type="button" style="width:auto;margin:0;" onclick="adminSearchByRef(\'complaint\')"><i class="fas fa-search"></i> 🍁</button>';
+      cList.parentNode.insertBefore(bar2, cList);
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', function(){ setTimeout(injectSearchBars, 400); });
+  else setTimeout(injectSearchBars, 400);
+  setInterval(injectSearchBars, 3000);
+
+  // Header leaf
+  var th = document.querySelector('.top-header span');
+  if(th && th.textContent.indexOf('🍁')<0) th.innerHTML = '<i class="fas fa-chess-king"></i> MrCrazy Admin 🍁';
+
+  console.log('Admin Oct theme + password login ready');
+})();
+</script>
+
+
+<script>
+/* WA Subscribers list from user app (waSubscriptions) */
+(function(){
+  window._waSubsCache = {};
+
+  function esc(s){ return String(s||"").replace(/[<>&]/g,function(c){return {"<":"&lt;",">":"&gt;","&":"&amp;"}[c];}); }
+
+  window.renderWaSubsList = function(filter){
+    var box = document.getElementById("wa-subs-list");
+    var countEl = document.getElementById("wa-subs-count");
+    if(!box) return;
+    filter = (filter || (document.getElementById("wa-sub-filter") && document.getElementById("wa-sub-filter").value) || "").trim().toLowerCase();
+    var rows = Object.entries(window._waSubsCache || {}).map(function(e){
+      var pid = e[0], v = e[1] || {};
+      return {
+        pid: pid,
+        whatsapp: v.whatsapp || v.number || v.wa || "",
+        userName: v.userName || v.name || "",
+        subscribedAt: v.subscribedAt || v.ts || 0,
+        source: v.source || ""
+      };
+    });
+    rows.sort(function(a,b){ return (b.subscribedAt||0)-(a.subscribedAt||0); });
+    if(filter){
+      rows = rows.filter(function(r){
+        return (r.pid+" "+r.whatsapp+" "+r.userName).toLowerCase().indexOf(filter) >= 0;
+      });
+    }
+    if(countEl) countEl.textContent = rows.length + " subscriber" + (rows.length===1?"":"s");
+    if(!rows.length){
+      box.innerHTML = '<p class="text-muted text-center" style="padding:20px;">Abhi koi WhatsApp subscribe nahi hua.</p>';
+      return;
+    }
+    box.innerHTML = rows.map(function(r){
+      var when = r.subscribedAt ? new Date(r.subscribedAt).toLocaleString() : "—";
+      var phone = String(r.whatsapp||"").replace(/\D/g,"");
+      var waLink = phone ? ("https://wa.me/" + (phone.indexOf("92")===0 ? phone : ("92"+phone.replace(/^0/,"")))) : "#";
+      var pidSafe = String(r.pid||"").replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+      var waSafe = String(r.whatsapp||"").replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+      return '<div class="data-card" style="border-left-color:#25D366;">' +
+        '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start;">' +
+        '<div><div style="font-size:10px;font-weight:800;color:#7d8aa0;text-transform:uppercase;">Project ID</div>' +
+        '<strong style="font-family:JetBrains Mono,monospace;color:var(--primary-dark);font-size:14px;">' + esc(r.pid) + '</strong>' +
+        (r.userName ? '<div class="text-muted" style="font-size:12px;margin-top:4px;">' + esc(r.userName) + '</div>' : '') +
+        '</div>' +
+        '<div style="text-align:right;"><div style="font-size:10px;font-weight:800;color:#7d8aa0;text-transform:uppercase;">WhatsApp</div>' +
+        '<strong style="font-family:JetBrains Mono,monospace;color:#128C7E;font-size:15px;">' + esc(r.whatsapp) + '</strong></div></div>' +
+        '<div class="text-muted" style="font-size:11px;margin-top:8px;"><i class="far fa-clock"></i> ' + when + '</div>' +
+        '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">' +
+        '<button class="btn btn-outline btn-pill" type="button" style="margin:0;" onclick="copyAdminRef(\'' + pidSafe + '\')"><i class="fas fa-copy"></i> Copy ID</button>' +
+        '<button class="btn btn-outline btn-pill" type="button" style="margin:0;" onclick="copyAdminRef(\'' + waSafe + '\')"><i class="fas fa-copy"></i> Copy Number</button>' +
+        (phone ? '<a class="btn btn-success btn-pill" style="margin:0;text-decoration:none;" href="' + waLink + '" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Chat</a>' : '') +
+        '</div></div>';
+    }).join("");
+  };
+
+  window.filterWaSubsList = function(){ renderWaSubsList(); };
+
+  window.loadWaSubscribers = function(){
+    var box = document.getElementById("wa-subs-list");
+    if(box) box.innerHTML = '<p class="text-muted text-center"><i class="fas fa-spinner fa-spin"></i> Loading…</p>';
+    try {
+      if(typeof onValue === "function" && typeof ref === "function" && typeof db !== "undefined"){
+        if(!window._waSubsLive){
+          window._waSubsLive = true;
+          onValue(ref(db, "waSubscriptions"), function(snap){
+            window._waSubsCache = snap.exists() ? (snap.val() || {}) : {};
+            renderWaSubsList();
+          }, function(err){
+            console.warn(err);
+            if(box) box.innerHTML = '<p class="text-muted text-center">Load error</p>';
+          });
+        } else {
+          renderWaSubsList();
+        }
+      } else if(typeof firebase !== "undefined" && firebase.database){
+        firebase.database().ref("waSubscriptions").on("value", function(snap){
+          window._waSubsCache = snap.exists() ? (snap.val() || {}) : {};
+          renderWaSubsList();
+        });
+      } else if(box) {
+        box.innerHTML = '<p class="text-muted text-center">Database not ready</p>';
+      }
+    } catch(e){
+      console.warn(e);
+      if(box) box.innerHTML = '<p class="text-muted text-center">Error loading subscribers</p>';
+    }
+  };
+
+  // Auto-start listener
+  setTimeout(function(){ try{ loadWaSubscribers(); }catch(e){} }, 1200);
+
+  // When opening tab
+  var _sw = window.switchTab;
+  if(typeof _sw === "function"){
+    window.switchTab = function(tabId, el){
+      var r = _sw.apply(this, arguments);
+      if(tabId === "view-wa-subs") loadWaSubscribers();
+      return r;
+    };
+  }
+})();
+</script>
+
+</body>
+</html>
